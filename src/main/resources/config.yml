@@ -1,0 +1,10 @@
+#############################################
+#            Config of testPlugin           #
+#############################################
+
+### Messages :
+messages:
+  # Prefix of the server
+  prefixserver: "&e&l[&b&lSendaria&e&l] &8&l»&f "
+  # message sent when player doesn't have the permissions to execute the command
+  haspermissions: "tu n'as pas la permissions d'executer cette commande."

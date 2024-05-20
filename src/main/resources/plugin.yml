@@ -1,0 +1,15 @@
+name: testplugin
+version: '${version}'
+main: fr.gamordstrimer.testplugin.Main
+api-version: '1.20'
+commands:
+  givecustomitems:
+    description: Donne un les items customs du plugin au joueur
+    usage: /givecustomitem <itemName> [amount]
+    aliases:
+      - gci
+  customitemsrecipes:
+    description: Affiche une interface permettant de connaitre les différents craft des items customs du serveur
+    usage: /customitemsrecipes
+    aliases:
+      - cir
