@@ -8,14 +8,12 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.ChatColor;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.*;
@@ -53,12 +51,6 @@ public class CustomItemsRecipes implements CommandExecutor, Listener {
         if (meta != null) {
             meta.setDisplayName(" ");
             glassPane.setItemMeta(meta);
-        }
-        // Fill empty slots with glass panes
-        for (int i = 0; i < inventorySize; i++) {
-            if (mainGUI.getItem(i) == null) {
-                mainGUI.setItem(i, glassPane);
-            }
         }
     }
 
@@ -100,14 +92,14 @@ public class CustomItemsRecipes implements CommandExecutor, Listener {
             }
         }
 
-        //crafting table
+        // crafting table
         ItemStack craftingtable = new ItemStack(Material.CRAFTING_TABLE);
         ItemMeta craftingtablemeta = craftingtable.getItemMeta();
         craftingtablemeta.setDisplayName("§6§lTable de Craft");
         craftingtablemeta.setLore(Arrays.asList("§7━━━━━━━━━━━━━━━━━━━━", "§8Cette Item peut être", "§8fabriqué dans une", "§e§lTable de Craft", "§7━━━━━━━━━━━━━━━━━━━━"));
         craftingtable.setItemMeta(craftingtablemeta);
 
-        //playerHead return ←
+        // playerHead return ←
         ItemStack headback = new ItemStack(Material.PLAYER_HEAD);
         String base64Texture = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjZkOGVmZjRjNjczZTA2MzY5MDdlYTVjMGI1ZmY0ZjY0ZGMzNWM2YWFkOWI3OTdmMWRmNjYzMzUxYjRjMDgxNCJ9fX0=";
         SkullTextureChanger.setSkullTexture(headback, base64Texture);
@@ -118,7 +110,6 @@ public class CustomItemsRecipes implements CommandExecutor, Listener {
         itemGUI.setItem(23, craftingtable);
         itemGUI.setItem(25, CustomItems.getItem(itemName));
         itemGUI.setItem(44, headback);
-
 
         // Fill empty slots with glass panes, except specific slots 10/11/12, 19/20/21, 28/29/30
         ItemStack glassPane = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);

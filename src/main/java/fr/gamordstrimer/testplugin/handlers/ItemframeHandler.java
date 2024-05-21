@@ -9,11 +9,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 
 public class ItemframeHandler implements Listener {
     private final Plugin plugin;
+
     public ItemframeHandler (Main plugin) {
         this.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
@@ -23,10 +23,9 @@ public class ItemframeHandler implements Listener {
     public void onItemFramePlace(HangingPlaceEvent event) {
         ItemStack item = event.getItemStack();
 
-        if(item.isSimilar(CustomItems.getItem("invisible_item_frame"))) {
+        if (item.isSimilar(CustomItems.getItem("invisible_item_frame"))) {
             ItemFrame itemFrame = (ItemFrame) event.getEntity();
             itemFrame.setVisible(false);
-            itemFrame.setMetadata("invisible-frame", new FixedMetadataValue(plugin, true));
 
             Player player = event.getPlayer();
             player.sendMessage("§bTu as placé un Cadre Invisible.");

@@ -12,20 +12,18 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class CustomItems {
     private static Plugin plugin;
-    private static final Map<String, ItemStack> customItems = new HashMap<>();
-    private static final Map<String, Recipe> customItemRecipes = new HashMap<>();
-    private static ItemStack HarmingPotionII;
-    private static ItemStack BlindnessPotionitem;
+    private static final Map<String, ItemStack> customItems = new LinkedHashMap<>();
+    private static final Map<String, Recipe> customItemRecipes = new LinkedHashMap<>();
+    private static final Map<String, ItemStack> customItemsForCraft = new LinkedHashMap<>();
 
     public static void init(Plugin main) {
         plugin = main;
@@ -43,20 +41,16 @@ public class CustomItems {
 
     //Curse set of item
     private static void CurseSword() {
-
-        //Creating an ItemStack that is a Harming Potion Level 2
+        // Creating a properly configured Potion ItemStack for Instant Damage II
         ItemStack potionItem = new ItemStack(Material.POTION);
         PotionMeta potionMeta = (PotionMeta) potionItem.getItemMeta();
         if (potionMeta != null) {
-            potionMeta.setDisplayName("Potion");
-            PotionEffectType effectType = PotionEffectType.HARM;
-            PotionEffect potionEffect = new PotionEffect(effectType, 1, 1);
-            potionMeta.addCustomEffect(potionEffect, true);
+            potionMeta.setBasePotionData(new PotionData(PotionType.INSTANT_DAMAGE, false, true)); // Level 2 Potion
             potionItem.setItemMeta(potionMeta);
-            HarmingPotionII = potionItem;
+            customItemsForCraft.put("instant_damage_ii_potion", potionItem);
         }
 
-        //Creating the Cursed Sword
+        // Creating the Cursed Sword
         ItemStack item = new ItemStack(Material.NETHERITE_SWORD);
         ItemMeta itemMeta = item.getItemMeta();
         if (itemMeta != null) {
@@ -67,7 +61,7 @@ public class CustomItems {
             item.setItemMeta(itemMeta);
         }
 
-        //Creating the Craft for the Cursed Sword
+        // Creating the Craft for the Cursed Sword
         ShapedRecipe cs = new ShapedRecipe(new NamespacedKey(plugin, "cursesword"), item);
         cs.shape(
                 " N ",
@@ -75,10 +69,10 @@ public class CustomItems {
                 " S "
         );
         cs.setIngredient('N', Material.NETHERITE_INGOT);
-        cs.setIngredient('H', HarmingPotionII.getType());
+        cs.setIngredient('H', new RecipeChoice.ExactChoice(customItemsForCraft.get("instant_damage_ii_potion")));
         cs.setIngredient('S', Material.STICK);
 
-        //Adding the CurseSword recipe to the server and the CurseSword Item inside the Hashmap
+        // Adding the CurseSword recipe to the server and the CurseSword Item inside the Hashmap
         Bukkit.getServer().addRecipe(cs);
         customItems.put("curse_sword", item);
         customItemRecipes.put("curse_sword", cs);
@@ -101,7 +95,7 @@ public class CustomItems {
         );
         ch.setIngredient('D', Material.DIAMOND);
         ch.setIngredient('N', Material.NETHERITE_INGOT);
-        ch.setIngredient('H', HarmingPotionII.getType());
+        ch.setIngredient('H', new RecipeChoice.ExactChoice(customItemsForCraft.get("instant_damage_ii_potion")));
 
         Bukkit.getServer().addRecipe(ch);
         customItems.put("curse_helmet", item);
@@ -124,7 +118,7 @@ public class CustomItems {
                 "DND"
         );
         cc.setIngredient('D', Material.DIAMOND);
-        cc.setIngredient('H', HarmingPotionII.getType());
+        cc.setIngredient('H', new RecipeChoice.ExactChoice(customItemsForCraft.get("instant_damage_ii_potion")));
         cc.setIngredient('N', Material.NETHERITE_INGOT);
 
         Bukkit.getServer().addRecipe(cc);
@@ -149,7 +143,7 @@ public class CustomItems {
         );
         cl.setIngredient('D', Material.DIAMOND);
         cl.setIngredient('N', Material.NETHERITE_INGOT);
-        cl.setIngredient('H', HarmingPotionII.getType());
+        cl.setIngredient('H', new RecipeChoice.ExactChoice(customItemsForCraft.get("instant_damage_ii_potion")));
 
         Bukkit.getServer().addRecipe(cl);
         customItems.put("curse_leggings", item);
@@ -173,7 +167,7 @@ public class CustomItems {
         );
         cb.setIngredient('D', Material.DIAMOND);
         cb.setIngredient('N', Material.NETHERITE_INGOT);
-        cb.setIngredient('H', HarmingPotionII.getType());
+        cb.setIngredient('H', new RecipeChoice.ExactChoice(customItemsForCraft.get("instant_damage_ii_potion")));
 
         Bukkit.getServer().addRecipe(cb);
         customItems.put("curse_boots", item);
@@ -190,7 +184,7 @@ public class CustomItems {
             potionMeta.setDisplayName(ChatColor.of("#FFFFFF") + "Potion de Cécité");
             potionMeta.setLore(Arrays.asList("§7", ChatColor.of("#FF5D00") + "§oSendaria"));
             potionItem.setItemMeta(potionMeta);
-            BlindnessPotionitem = potionItem;
+            customItemsForCraft.put("blindness_potion", potionItem);
         }
         customItems.put("blindness_potion", potionItem);
     }
@@ -215,7 +209,7 @@ public class CustomItems {
                 "   "
         );
         hb.setIngredient('L', Material.LEATHER);
-        hb.setIngredient('B', BlindnessPotionitem.getType());
+        hb.setIngredient('B', new RecipeChoice.ExactChoice(customItemsForCraft.get("blindness_potion")));
 
         Bukkit.getServer().addRecipe(hb);
         customItems.put("headband", item);
@@ -261,6 +255,10 @@ public class CustomItems {
 
     public static Map<String, Recipe> getCustomRecipes() {
         return customItemRecipes; // Retrieve the entire custom recipes map
+    }
+
+    public static Map<String, ItemStack> getCustomItemsForCraft() {
+        return customItemsForCraft;
     }
 
 }

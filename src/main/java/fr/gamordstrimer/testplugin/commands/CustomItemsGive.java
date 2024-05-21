@@ -2,7 +2,6 @@ package fr.gamordstrimer.testplugin.commands;
 
 import fr.gamordstrimer.testplugin.Main;
 import fr.gamordstrimer.testplugin.customitems.CustomItems;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,10 +14,10 @@ import java.util.List;
 
 import static net.md_5.bungee.api.ChatColor.translateAlternateColorCodes;
 
-public class GiveCustomItems implements CommandExecutor, TabCompleter {
+public class CustomItemsGive implements CommandExecutor, TabCompleter {
     private final Main plugin;
 
-    public GiveCustomItems(Main plugin) {
+    public CustomItemsGive(Main plugin) {
         this.plugin = plugin;
     }
 
