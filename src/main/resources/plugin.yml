@@ -16,3 +16,6 @@ commands:
   resetcooldown:
     description: Permet de reset le cooldown lié à un joueur
     usage: /resetcooldown [Player]
+  freeze:
+    description: Permet de Gelé un joueur
+    usage: /freeze [Player]

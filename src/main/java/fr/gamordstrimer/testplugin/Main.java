@@ -7,7 +7,9 @@ import fr.gamordstrimer.testplugin.handlers.ArmorHandler;
 import fr.gamordstrimer.testplugin.handlers.ItemframeHandler;
 import fr.gamordstrimer.testplugin.handlers.PlayerHandler;
 import fr.gamordstrimer.testplugin.staff.Staff;
+import fr.gamordstrimer.testplugin.staff.StaffHandler;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
@@ -55,6 +57,7 @@ public final class Main extends JavaPlugin {
         new PlayerHandler(this, cooldownManager);
         new ArmorHandler(this); // Pass logger to ArmorHandler constructor
         new ItemframeHandler(this);
+        new StaffHandler(this);
     }
 
     private void registerCommands() {
@@ -64,5 +67,21 @@ public final class Main extends JavaPlugin {
         //Staff
         Objects.requireNonNull(getCommand("resetcooldown")).setExecutor(new Staff(this, cooldownManager));
         Objects.requireNonNull(getCommand("freeze")).setExecutor(new Staff(this, cooldownManager));
+    }
+
+    public List<UUID> getStaff() {
+        return staff;
+    }
+
+    public boolean isInStaff(Player player) {
+        return getStaff().contains(player.getUniqueId());
+    }
+
+    public Map<UUID, Location> getFreezedplayer() {
+        return freezedplayer;
+    }
+
+    public boolean isFreeze(Player player) {
+        return getFreezedplayer().containsKey(player.getUniqueId());
     }
 }

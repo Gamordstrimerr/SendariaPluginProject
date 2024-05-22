@@ -2,6 +2,8 @@ package fr.gamordstrimer.testplugin.staff;
 
 import fr.gamordstrimer.testplugin.CooldownManager;
 import fr.gamordstrimer.testplugin.Main;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -39,7 +41,7 @@ public class Staff implements CommandExecutor {
                         cooldownManager.removeCooldown(target.getUniqueId());
                         player.sendMessage(prefixserver + " le cooldown de " + target.getName() + " à été réinitialisé.");
                     } else {
-                        player.sendMessage(prefixserver + " Player not found.");
+                        player.sendMessage(prefixserver + " Joueur non trouvé.");
                     }
                 } else {
                     player.sendMessage(prefixserver + " Utilisation: /resetcooldown [player]");
@@ -54,7 +56,25 @@ public class Staff implements CommandExecutor {
                 return true;
             }
             if(player.hasPermission("")) {
+                if (args.length == 1) {
+                    Player target = player.getServer().getPlayer(args[0]);
+                    if (target != null) {
+                        if(plugin.getFreezedplayer().containsKey(target.getUniqueId())) {
+                            plugin.getFreezedplayer().remove(target.getUniqueId());
+                            player.sendMessage(Component.text(prefixserver).append(Component.text(" " + target.getName()).color(NamedTextColor.DARK_RED))
+                                    .append(Component.text(" à été Degelé.").color(NamedTextColor.RED)));
+                            target.sendMessage(Component.text(prefixserver).append(Component.text(" Vous avez été Degelé.").color(NamedTextColor.RED)));
+                        } else {
+                            plugin.getFreezedplayer().put(target.getUniqueId(), target.getLocation());
+                            player.sendMessage(Component.text(prefixserver).append(Component.text(" " + target.getName()).color(NamedTextColor.DARK_RED))
+                                    .append(Component.text(" à été Gelé.").color(NamedTextColor.RED)));
+                            target.sendMessage(Component.text(prefixserver).append(Component.text(" Vous avez été Gelé.").color(NamedTextColor.RED)));
+                        }
 
+                    } else {
+                        player.sendMessage(prefixserver + " Joueur non trouvé.");
+                    }
+                }
             } else {
                 player.sendMessage(prefixserver + " " +perms);
             }
