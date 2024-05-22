@@ -8,6 +8,7 @@ import fr.gamordstrimer.testplugin.handlers.ItemframeHandler;
 import fr.gamordstrimer.testplugin.handlers.PlayerHandler;
 import fr.gamordstrimer.testplugin.staff.Staff;
 import fr.gamordstrimer.testplugin.staff.StaffHandler;
+import fr.gamordstrimer.testplugin.staff.StaffMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -67,6 +68,7 @@ public final class Main extends JavaPlugin {
         //Staff
         Objects.requireNonNull(getCommand("resetcooldown")).setExecutor(new Staff(this, cooldownManager));
         Objects.requireNonNull(getCommand("freeze")).setExecutor(new Staff(this, cooldownManager));
+        Objects.requireNonNull(getCommand("staff")).setExecutor(new StaffMode(this));
     }
 
     public List<UUID> getStaff() {

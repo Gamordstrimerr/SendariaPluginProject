@@ -19,3 +19,6 @@ commands:
   freeze:
     description: Permet de Gelé un joueur
     usage: /freeze [Player]
+  staff:
+    description: Permet d'activer le mode de modération
+    usage: /staff

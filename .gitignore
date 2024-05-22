@@ -2,4 +2,5 @@
 /.gradle/
 /build/
 /server/
+/.idea/
 /build/classes/java/main/
