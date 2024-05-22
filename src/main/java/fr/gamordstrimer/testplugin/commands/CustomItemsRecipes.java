@@ -3,6 +3,9 @@ package fr.gamordstrimer.testplugin.commands;
 import fr.gamordstrimer.testplugin.Main;
 import fr.gamordstrimer.testplugin.customitems.CustomItems;
 import fr.gamordstrimer.testplugin.heads.SkullTextureChanger;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -15,6 +18,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -23,13 +27,42 @@ public class CustomItemsRecipes implements CommandExecutor, Listener {
 
     private Logger logger;
     private static Inventory mainGUI;
-    private static Map<String, Inventory> itemGUIs = new HashMap<>();
+    private static final Map<String, Inventory> itemGUIs = new HashMap<>();
+    private static ItemStack BackItem;
+    private static ItemStack CraftingTable;
 
     public CustomItemsRecipes(Main plugin, Logger logger) {
         this.logger = logger;
         Bukkit.getPluginManager().registerEvents(this, plugin);
+        setupItemGUI();
         // Initialize the main GUI inventory
         initMainGUI();
+    }
+
+    private void setupItemGUI() {
+
+        //headback in menu (go back)
+        ItemStack headback = new ItemStack(Material.PLAYER_HEAD);
+        String base64Texture = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjZkOGVmZjRjNjczZTA2MzY5MDdlYTVjMGI1ZmY0ZjY0ZGMzNWM2YWFkOWI3OTdmMWRmNjYzMzUxYjRjMDgxNCJ9fX0=";
+        SkullTextureChanger.setSkullTexture(headback, base64Texture);
+        SkullMeta headbackmeta = (SkullMeta) headback.getItemMeta();
+        headbackmeta.displayName(Component.text("Retour").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false));
+        headback.setItemMeta(headbackmeta);
+        BackItem = headback;
+
+        // crafting table
+        ItemStack craftingtable = new ItemStack(Material.CRAFTING_TABLE);
+        ItemMeta craftingtablemeta = craftingtable.getItemMeta();
+        craftingtablemeta.displayName(Component.text("Table de Craft").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false));
+        List<Component> lore = new ArrayList<>();
+        lore.add(Component.text("━━━━━━━━━━━━━━━━━━━━").color(NamedTextColor.GRAY));
+        lore.add(Component.text("Cette Item peut être").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+        lore.add(Component.text("fabriqué dans une").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+        lore.add(Component.text("Table de Craft").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false));
+        lore.add(Component.text("━━━━━━━━━━━━━━━━━━━━").color(NamedTextColor.GRAY));
+        craftingtablemeta.lore(lore);
+        craftingtable.setItemMeta(craftingtablemeta);
+        CraftingTable = craftingtable;
     }
 
     private void initMainGUI() {
@@ -45,13 +78,6 @@ public class CustomItemsRecipes implements CommandExecutor, Listener {
             // Initialize individual item GUI
             ItemGUI(itemName, itemStack);
         });
-        // Create the glass pane item stack
-        ItemStack glassPane = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-        ItemMeta meta = glassPane.getItemMeta();
-        if (meta != null) {
-            meta.setDisplayName(" ");
-            glassPane.setItemMeta(meta);
-        }
     }
 
     private void ItemGUI(String itemName, ItemStack itemStack) {
@@ -62,15 +88,14 @@ public class CustomItemsRecipes implements CommandExecutor, Listener {
         Recipe recipe = CustomItems.getRecipe(itemName);
 
         if (recipe != null) {
-            if (recipe instanceof ShapedRecipe) {
-                ShapedRecipe shapedRecipe = (ShapedRecipe) recipe;
+            if (recipe instanceof ShapedRecipe shapedRecipe) {
                 Map<Character, ItemStack> ingredientMap = shapedRecipe.getIngredientMap();
                 String[] shape = shapedRecipe.getShape();
 
                 int index = 10;
-                for (int row = 0; row < shape.length; row++) {
-                    for (int col = 0; col < shape[row].length(); col++) {
-                        char ingredientChar = shape[row].charAt(col);
+                for (String s : shape) {
+                    for (int col = 0; col < s.length(); col++) {
+                        char ingredientChar = s.charAt(col);
                         if (ingredientChar != ' ') {
                             ItemStack ingredient = ingredientMap.get(ingredientChar);
                             if (ingredient != null) {
@@ -83,8 +108,7 @@ public class CustomItemsRecipes implements CommandExecutor, Listener {
                     }
                     index += 6; // Move to the next row in the GUI
                 }
-            } else if (recipe instanceof ShapelessRecipe) {
-                ShapelessRecipe shapelessRecipe = (ShapelessRecipe) recipe;
+            } else if (recipe instanceof ShapelessRecipe shapelessRecipe) {
                 int index = 10; // Starting position in a 3x3 grid
                 for (ItemStack ingredient : shapelessRecipe.getIngredientList()) {
                     itemGUI.setItem(index++, ingredient);
@@ -92,30 +116,15 @@ public class CustomItemsRecipes implements CommandExecutor, Listener {
             }
         }
 
-        // crafting table
-        ItemStack craftingtable = new ItemStack(Material.CRAFTING_TABLE);
-        ItemMeta craftingtablemeta = craftingtable.getItemMeta();
-        craftingtablemeta.setDisplayName("§6§lTable de Craft");
-        craftingtablemeta.setLore(Arrays.asList("§7━━━━━━━━━━━━━━━━━━━━", "§8Cette Item peut être", "§8fabriqué dans une", "§e§lTable de Craft", "§7━━━━━━━━━━━━━━━━━━━━"));
-        craftingtable.setItemMeta(craftingtablemeta);
-
-        // playerHead return ←
-        ItemStack headback = new ItemStack(Material.PLAYER_HEAD);
-        String base64Texture = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjZkOGVmZjRjNjczZTA2MzY5MDdlYTVjMGI1ZmY0ZjY0ZGMzNWM2YWFkOWI3OTdmMWRmNjYzMzUxYjRjMDgxNCJ9fX0=";
-        SkullTextureChanger.setSkullTexture(headback, base64Texture);
-        SkullMeta headbackmeta = (SkullMeta) headback.getItemMeta();
-        headbackmeta.setDisplayName("§c§lRetour");
-        headback.setItemMeta(headbackmeta);
-
-        itemGUI.setItem(23, craftingtable);
+        itemGUI.setItem(23, CraftingTable);
         itemGUI.setItem(25, CustomItems.getItem(itemName));
-        itemGUI.setItem(44, headback);
+        itemGUI.setItem(44, BackItem);
 
         // Fill empty slots with glass panes, except specific slots 10/11/12, 19/20/21, 28/29/30
         ItemStack glassPane = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta meta = glassPane.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName(" ");
+            meta.displayName(Component.text(" "));
             glassPane.setItemMeta(meta);
         }
 
@@ -132,13 +141,11 @@ public class CustomItemsRecipes implements CommandExecutor, Listener {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage("This command can only be used by players.");
             return true; // Return true to indicate the command was handled
         }
-
-        Player player = (Player) sender;
 
         if (player.hasPermission("sendaria.cir") || player.hasPermission("*")) {
             player.openInventory(mainGUI);
@@ -172,7 +179,7 @@ public class CustomItemsRecipes implements CommandExecutor, Listener {
                 }
             }
         } else if (clickedInventory != null && itemGUIs.containsValue(clickedInventory)) {
-            if (clickedItem != null && clickedItem.getItemMeta().getDisplayName().equals("§c§lRetour")) {
+            if (clickedItem != null && clickedItem.equals(BackItem)) {
                 player.openInventory(mainGUI);
             }
             // Cancel the event to prevent any interaction with the custom GUI

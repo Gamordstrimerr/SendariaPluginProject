@@ -1,4 +1,4 @@
-package fr.gamordstrimer.testplugin.staffmode;
+package fr.gamordstrimer.testplugin.staff;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

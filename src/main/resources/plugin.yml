@@ -13,3 +13,6 @@ commands:
     usage: /customitemsrecipes
     aliases:
       - cir
+  resetcooldown:
+    description: Permet de reset le cooldown lié à un joueur
+    usage: /resetcooldown [Player]
