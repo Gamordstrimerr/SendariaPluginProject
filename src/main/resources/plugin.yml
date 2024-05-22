@@ -13,8 +13,3 @@ commands:
     usage: /customitemsrecipes
     aliases:
       - cir
-  gamemode:
-    description: Permet au joueur de changer de Mode de jeu
-    usage: /gamemode
-    aliases:
-      - gm

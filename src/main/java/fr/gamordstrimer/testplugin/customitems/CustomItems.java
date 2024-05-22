@@ -1,5 +1,9 @@
 package fr.gamordstrimer.testplugin.customitems;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -7,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -37,6 +42,7 @@ public class CustomItems {
         BlindnessPotion();
         HeadBand();
         InvisibleItemFrame();
+        MagicLantern();
     }
 
     //Curse set of item
@@ -45,17 +51,21 @@ public class CustomItems {
         ItemStack potionItem = new ItemStack(Material.POTION);
         PotionMeta potionMeta = (PotionMeta) potionItem.getItemMeta();
         if (potionMeta != null) {
-            potionMeta.setBasePotionData(new PotionData(PotionType.INSTANT_DAMAGE, false, true)); // Level 2 Potion
+            potionMeta.setBasePotionData(new PotionData(PotionType.INSTANT_DAMAGE, false, true)); // false for extended, true for upgraded
             potionItem.setItemMeta(potionMeta);
-            customItemsForCraft.put("instant_damage_ii_potion", potionItem);
         }
+        customItemsForCraft.put("instant_damage_ii_potion", potionItem);
 
         // Creating the Cursed Sword
         ItemStack item = new ItemStack(Material.NETHERITE_SWORD);
         ItemMeta itemMeta = item.getItemMeta();
         if (itemMeta != null) {
-            itemMeta.setDisplayName("§4ᛍᚢᚱᛌᛂᛌᚥᚮᚱᛑ");
-            itemMeta.setLore(Arrays.asList(ChatColor.of("#E96767") + "≈ Épée Maudite", "§7", ChatColor.of("#FF5D00") + "§oSendaria"));
+            itemMeta.displayName(Component.text("ᛍᚢᚱᛌᛂᛌᚥᚮᚱᛑ").color(TextColor.fromHexString("#D00000")).decoration(TextDecoration.ITALIC, false));
+            List<Component> lore = new ArrayList<>();
+            lore.add(Component.text("≈ Épée Maudite").color(TextColor.fromHexString("#FF5D00")).decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text(" "));
+            lore.add(Component.text("Sendaria").color(TextColor.fromHexString("#FF5D00")).decorate(TextDecoration.ITALIC));
+            itemMeta.lore(lore);
             AttributeModifier modifier = new AttributeModifier(UUID.randomUUID(), "generic.attackDamage", 15.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND);
             itemMeta.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE, modifier);
             item.setItemMeta(itemMeta);
@@ -82,8 +92,12 @@ public class CustomItems {
         ItemStack item = new ItemStack(Material.NETHERITE_HELMET);
         ItemMeta itemMeta = item.getItemMeta();
         if (itemMeta != null) {
-            itemMeta.setDisplayName(ChatColor.of("#D00000") + "ᛍᚢᚱᛌᛂ ᚼᛂᛚᛘᛂᛐ");
-            itemMeta.setLore(Arrays.asList(ChatColor.of("#E96767") + "≈ Casque Maudit", "§7", ChatColor.of("#FF5D00") + "§oSendaria"));
+            itemMeta.displayName(Component.text("ᛍᚢᚱᛌᛂ ᚼᛂᛚᛘᛂᛐ").color(TextColor.fromHexString("#D00000")).decoration(TextDecoration.ITALIC, false));
+            List<Component> lore = new ArrayList<>();
+            lore.add(Component.text("≈ Casque Maudit").color(TextColor.fromHexString("#FF5D00")).decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text(" "));
+            lore.add(Component.text("Sendaria").color(TextColor.fromHexString("#FF5D00")).decorate(TextDecoration.ITALIC));
+            itemMeta.lore(lore);
             item.setItemMeta(itemMeta);
         }
 
@@ -106,8 +120,12 @@ public class CustomItems {
         ItemStack item = new ItemStack(Material.NETHERITE_CHESTPLATE);
         ItemMeta itemMeta = item.getItemMeta();
         if (itemMeta != null) {
-            itemMeta.setDisplayName(ChatColor.of("#D00000") + "ᚿᛂᛐᚼᛂᚱᛁᛐᛂ ᛍᚼᛂᛌᛐᛔᛚᛆᛐᛂ");
-            itemMeta.setLore(Arrays.asList(ChatColor.of("#E96767") + "≈ Plastron Maudit", "§7", ChatColor.of("#FF5D00") + "§oSendaria"));
+            itemMeta.displayName(Component.text("ᚿᛂᛐᚼᛂᚱᛁᛐᛂ ᛍᚼᛂᛌᛐᛔᛚᛆᛐᛂ").color(TextColor.fromHexString("#D00000")).decoration(TextDecoration.ITALIC, false));
+            List<Component> lore = new ArrayList<>();
+            lore.add(Component.text("≈ Plastron Maudit").color(TextColor.fromHexString("#FF5D00")).decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text(" "));
+            lore.add(Component.text("Sendaria").color(TextColor.fromHexString("#FF5D00")).decorate(TextDecoration.ITALIC));
+            itemMeta.lore(lore);
             item.setItemMeta(itemMeta);
         }
 
@@ -130,8 +148,12 @@ public class CustomItems {
         ItemStack item = new ItemStack(Material.NETHERITE_LEGGINGS);
         ItemMeta itemMeta = item.getItemMeta();
         if (itemMeta != null) {
-            itemMeta.setDisplayName(ChatColor.of("#D00000") + "ᚿᛂÞᛂᚱᛁᛐᛂ ᛚᛂᚵᚵᛁᛜᛍ");
-            itemMeta.setLore(Arrays.asList(ChatColor.of("#E96767") + "≈ Jambières Maudites", "§7", ChatColor.of("#FF5D00") + "§oSendaria"));
+            itemMeta.displayName(Component.text("ᚿᛂÞᛂᚱᛁᛐᛂ ᛚᛂᚵᚵᛁᛜᛍ").color(TextColor.fromHexString("#D00000")).decoration(TextDecoration.ITALIC, false));
+            List<Component> lore = new ArrayList<>();
+            lore.add(Component.text("≈ Jambières Maudites").color(TextColor.fromHexString("#FF5D00")).decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text(" "));
+            lore.add(Component.text("Sendaria").color(TextColor.fromHexString("#FF5D00")).decorate(TextDecoration.ITALIC));
+            itemMeta.lore(lore);
             item.setItemMeta(itemMeta);
         }
 
@@ -154,8 +176,12 @@ public class CustomItems {
         ItemStack item = new ItemStack(Material.NETHERITE_BOOTS);
         ItemMeta itemMeta = item.getItemMeta();
         if (itemMeta != null) {
-            itemMeta.setDisplayName(ChatColor.of("#D00000") + "ᚿᛂÞᛂᚱᛁᛐᛂ ᛒᚮᚮᛐᛍ");
-            itemMeta.setLore(Arrays.asList(ChatColor.of("#E96767") + "≈ Bottes Maudites", "§7", ChatColor.of("#FF5D00") + "§oSendaria"));
+            itemMeta.displayName(Component.text("ᚿᛂÞᛂᚱᛁᛐᛂ ᛒᚮᚮᛐᛍ").color(TextColor.fromHexString("#D00000")).decoration(TextDecoration.ITALIC, false));
+            List<Component> lore = new ArrayList<>();
+            lore.add(Component.text("≈ Bottes Maudites").color(TextColor.fromHexString("#FF5D00")).decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text(" "));
+            lore.add(Component.text("Sendaria").color(TextColor.fromHexString("#FF5D00")).decorate(TextDecoration.ITALIC));
+            itemMeta.lore(lore);
             item.setItemMeta(itemMeta);
         }
 
@@ -181,8 +207,11 @@ public class CustomItems {
         if (potionMeta != null) {
             potionMeta.setColor(Color.BLACK);
             potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.BLINDNESS, 3600, 0), true);
-            potionMeta.setDisplayName(ChatColor.of("#FFFFFF") + "Potion de Cécité");
-            potionMeta.setLore(Arrays.asList("§7", ChatColor.of("#FF5D00") + "§oSendaria"));
+            potionMeta.displayName(Component.text("Potion de Cécité").color(TextColor.fromHexString("#FFFFFF")).decoration(TextDecoration.ITALIC, false));
+            List<Component> lore = new ArrayList<>();
+            lore.add(Component.text(" "));
+            lore.add(Component.text("Sendaria").color(TextColor.fromHexString("#FF5D00")).decorate(TextDecoration.ITALIC));
+            potionMeta.lore(lore);
             potionItem.setItemMeta(potionMeta);
             customItemsForCraft.put("blindness_potion", potionItem);
         }
@@ -194,8 +223,13 @@ public class CustomItems {
         ItemStack item = new ItemStack(Material.LEATHER_HELMET);
         ItemMeta itemMeta = item.getItemMeta();
         if (itemMeta != null) {
-            itemMeta.setDisplayName(ChatColor.of("#8800ED") + "Bandeau");
-            itemMeta.setLore(Arrays.asList("§7Cette Item permet de rendre", "§7aveugle un joueur.", "§7", ChatColor.of("#FF5D00") + "§oSendaria"));
+            itemMeta.displayName(Component.text("Bandeau").color(TextColor.fromHexString("#8800ED")).decoration(TextDecoration.ITALIC, false));
+            List<Component> lore = new ArrayList<>();
+            lore.add(Component.text("Cette Item permet de rendre").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text("aveugle un joueur.").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text(" "));
+            lore.add(Component.text("Sendaria").color(TextColor.fromHexString("#FF5D00")).decorate(TextDecoration.ITALIC));
+            itemMeta.lore(lore);
             LeatherArmorMeta leatherArmorMeta = (LeatherArmorMeta) itemMeta;
             leatherArmorMeta.setColor(Color.fromRGB(0, 0, 0));
             leatherArmorMeta.addItemFlags(ItemFlag.HIDE_DYE);
@@ -220,8 +254,12 @@ public class CustomItems {
         ItemStack item = new ItemStack(Material.ITEM_FRAME);
         ItemMeta itemMeta = item.getItemMeta();
         if (itemMeta != null) {
-            itemMeta.setDisplayName(ChatColor.AQUA + "Cadre Invisible");
-            itemMeta.setLore(Arrays.asList("§8Ce Cadre est Invisible lorsque vous le placez.", "§7", ChatColor.of("#FF5D00") + "§oSendaria"));
+            itemMeta.displayName(Component.text("Cadre Invisible").color(TextColor.fromHexString("#00c6ff")).decoration(TextDecoration.ITALIC, false));
+            List<Component> lore = new ArrayList<>();
+            lore.add(Component.text("Ce Cadre est Invisible lorsque vois le placez").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text(" "));
+            lore.add(Component.text("Sendaria").color(TextColor.fromHexString("#FF5D00")).decorate(TextDecoration.ITALIC));
+            itemMeta.lore(lore);
             item.setItemMeta(itemMeta);
         }
 
@@ -233,20 +271,42 @@ public class CustomItems {
         customItemRecipes.put("invisible_item_frame", iif);
     }
 
+    private static void MagicLantern() {
+        ItemStack item = new ItemStack(Material.SOUL_LANTERN);
+        ItemMeta itemMeta = item.getItemMeta();
+        if(itemMeta != null) {
+            itemMeta.displayName(Component.text("Lanterne Magique").color(TextColor.fromHexString("#A89CF0")).decoration(TextDecoration.ITALIC, false));
+            List<Component> lore = new ArrayList<>();
+            lore.add(Component.text("Cette Lantern vous procure une vision").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text("dans le noir en la tenant dans votre main").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text(" "));
+            lore.add(Component.text("Sendaria").color(TextColor.fromHexString("#FF5D00")).decorate(TextDecoration.ITALIC));
+            itemMeta.lore(lore);
+            itemMeta.addEnchant(Enchantment.LUCK, 1, false);
+            itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            item.setItemMeta(itemMeta);
+        }
+
+        ShapedRecipe ml = new ShapedRecipe(new NamespacedKey(plugin, "magiclantern"), item);
+        ml.shape(
+                " S ",
+                "GDG",
+                " S "
+        );
+        ml.setIngredient('S', Material.SOUL_LANTERN);
+        ml.setIngredient('D', Material.DIAMOND);
+        ml.setIngredient('G', Material.GLASS);
+        Bukkit.getServer().addRecipe(ml);
+        customItems.put("magic_lantern", item);
+        customItemRecipes.put("magic_lantern", ml);
+    }
+
     public static ItemStack getItem(String itemName) {
         return customItems.get(itemName); // Retrieve item from the map
     }
 
     public static Recipe getRecipe(String itemName) {
         return customItemRecipes.get(itemName);
-    }
-
-    // Method to log the contents of customItemRecipes map
-    public static void logCustomItemRecipes() {
-        for (Map.Entry<String, Recipe> entry : customItemRecipes.entrySet()) {
-            String itemName = entry.getKey();
-            Recipe recipe = entry.getValue();
-        }
     }
 
     public static Map<String, ItemStack> getCustomItems() {
