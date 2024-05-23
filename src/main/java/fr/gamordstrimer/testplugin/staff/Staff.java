@@ -44,7 +44,9 @@ public class Staff implements CommandExecutor {
                         player.sendMessage(prefixserver + " Joueur non trouvé.");
                     }
                 } else {
-                    player.sendMessage(prefixserver + " Utilisation: /resetcooldown [player]");
+                    player.sendMessage(Component.text(prefixserver)
+                            .append(Component.text("Utilisation : ")
+                            .append(Component.text("/resetcooldown [player]").color(NamedTextColor.GOLD))));
                 }
                 return true;
             } else {
@@ -74,6 +76,10 @@ public class Staff implements CommandExecutor {
                     } else {
                         player.sendMessage(prefixserver + " Joueur non trouvé.");
                     }
+                } else {
+                    player.sendMessage(Component.text(prefixserver)
+                            .append(Component.text("Utilisation : ")
+                            .append(Component.text("/freeze [player]").color(NamedTextColor.GOLD))));
                 }
             } else {
                 player.sendMessage(prefixserver + " " +perms);

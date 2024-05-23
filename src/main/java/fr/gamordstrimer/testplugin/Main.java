@@ -26,13 +26,13 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        getLogger().info("TestPlugin has been enabled!"); //message send in the console at the start of the plugin
+        getLogger().info("TestPlugin has been enabled!"); // Message sent in the console at the start of the plugin
         setup();
     }
 
     @Override
     public void onDisable() {
-        cooldownManager.saveCooldowns(); //saving cooldowns before shutting down the server
+        cooldownManager.saveCooldowns(); // Save cooldowns before shutting down the server
     }
 
     // ================================================
@@ -41,17 +41,17 @@ public final class Main extends JavaPlugin {
         getConfig().options().copyDefaults();
         saveDefaultConfig();
 
-        //registering elements
-        CustomItems.init(this);
-        registerCommands();
-        registerEvents();
-
         // Initialize the CooldownManager first
         cooldownManager = new CooldownManager(getDataFolder());
 
-        //Initialize Variable
+        // Initialize Variable
         staff = new ArrayList<>();
         freezedplayer = new HashMap<>();
+
+        // Registering elements
+        CustomItems.init(this);
+        registerCommands();
+        registerEvents();
     }
 
     private void registerEvents() {
@@ -65,7 +65,8 @@ public final class Main extends JavaPlugin {
         Objects.requireNonNull(getCommand("customitemsgive")).setExecutor(new CustomItemsGive(this));
         Objects.requireNonNull(getCommand("customitemsgive")).setTabCompleter(new CustomItemsGive(this));
         Objects.requireNonNull(getCommand("customitemsrecipes")).setExecutor(new CustomItemsRecipes(this, getLogger()));
-        //Staff
+
+        // Staff commands
         Objects.requireNonNull(getCommand("resetcooldown")).setExecutor(new Staff(this, cooldownManager));
         Objects.requireNonNull(getCommand("freeze")).setExecutor(new Staff(this, cooldownManager));
         Objects.requireNonNull(getCommand("staff")).setExecutor(new StaffMode(this));

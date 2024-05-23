@@ -6,12 +6,15 @@ import fr.gamordstrimer.testplugin.customitems.CustomItems;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -82,6 +85,22 @@ public class PlayerHandler implements Listener {
 
                 Bukkit.getScheduler().runTaskLater(plugin, () -> cooldownManager.removeCooldown(playerUUID), 30 * 60 * 20L); // 30 minutes in ticks
             }
+        }
+    }
+
+    @EventHandler
+    public void onMove(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        World world = player.getWorld();
+        // Get the previous location of the player
+        double prevX = event.getFrom().getX();
+        double prevY = event.getFrom().getY();
+        double prevZ = event.getFrom().getZ();
+
+        // Check if the player has moved
+        if (prevX != event.getTo().getX() || prevY != event.getTo().getY() || prevZ != event.getTo().getZ()) {
+            // Player has moved, spawn cloud particles at the current location
+            world.spawnParticle(Particle.CLOUD, player.getLocation(), 10, 0, 0, 0, 0); // Adjust particle parameters as needed
         }
     }
 }
