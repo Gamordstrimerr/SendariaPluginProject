@@ -6,6 +6,7 @@ import fr.gamordstrimer.testplugin.customitems.CustomItems;
 import fr.gamordstrimer.testplugin.handlers.ArmorHandler;
 import fr.gamordstrimer.testplugin.handlers.ItemframeHandler;
 import fr.gamordstrimer.testplugin.handlers.PlayerHandler;
+import fr.gamordstrimer.testplugin.staff.PlayerManager;
 import fr.gamordstrimer.testplugin.staff.Staff;
 import fr.gamordstrimer.testplugin.staff.StaffHandler;
 import fr.gamordstrimer.testplugin.staff.StaffMode;
@@ -19,6 +20,7 @@ public final class Main extends JavaPlugin {
     private CooldownManager cooldownManager;
     private List<UUID> staff;
     private Map<UUID, Location> freezedplayer;
+    private Map<UUID, PlayerManager> players = new HashMap<>();
 
     // ================================================
     //              onEnable() & onDisable()
@@ -50,6 +52,7 @@ public final class Main extends JavaPlugin {
 
         // Registering elements
         CustomItems.init(this);
+        PlayerManager.setPlugin(this);
         registerCommands();
         registerEvents();
     }
@@ -86,5 +89,9 @@ public final class Main extends JavaPlugin {
 
     public boolean isFreeze(Player player) {
         return getFreezedplayer().containsKey(player.getUniqueId());
+    }
+
+    public Map<UUID, PlayerManager> getPlayers() {
+        return players;
     }
 }
