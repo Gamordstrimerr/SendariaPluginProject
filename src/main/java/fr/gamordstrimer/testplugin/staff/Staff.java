@@ -84,6 +84,32 @@ public class Staff implements CommandExecutor {
             } else {
                 player.sendMessage(prefixserver + " " +perms);
             }
+        } else if (command.getName().equalsIgnoreCase("vanish")) {
+            if (!(sender instanceof Player player)) {
+                sender.sendMessage("Only players can use this command.");
+                return true;
+            }
+            if(player.hasPermission("")) {
+                if (args.length == 0) {
+                    if (plugin.isVanish(player)) {
+                        plugin.getVanish().remove(player.getUniqueId());
+                        player.sendMessage(Component.text(prefixserver)
+                                .append(Component.text(" Vanish ")
+                                        .append(Component.text("Désactiver.").color(NamedTextColor.RED))));
+                    } else {
+                        plugin.getVanish().add(player.getUniqueId());
+                        player.sendMessage(Component.text(prefixserver)
+                                .append(Component.text(" Vanish ")
+                                .append(Component.text("Activé.").color(NamedTextColor.GREEN))));
+                    }
+                } else {
+                    player.sendMessage(Component.text(prefixserver)
+                            .append(Component.text(" Utilisation : ")
+                            .append(Component.text("/vanish").color(NamedTextColor.GOLD))));
+                }
+            } else {
+                player.sendMessage(prefixserver + " " +perms);
+            }
         }
         // Add more commands here if needed
         return true;

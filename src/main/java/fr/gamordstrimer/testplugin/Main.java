@@ -19,6 +19,7 @@ import java.util.*;
 public final class Main extends JavaPlugin {
     private CooldownManager cooldownManager;
     private List<UUID> staff;
+    private List<UUID> vanish;
     private Map<UUID, Location> freezedplayer;
     private Map<UUID, PlayerManager> players = new HashMap<>();
 
@@ -48,6 +49,7 @@ public final class Main extends JavaPlugin {
 
         // Initialize Variable
         staff = new ArrayList<>();
+        vanish = new ArrayList<>();
         freezedplayer = new HashMap<>();
 
         // Registering elements
@@ -73,6 +75,7 @@ public final class Main extends JavaPlugin {
         Objects.requireNonNull(getCommand("resetcooldown")).setExecutor(new Staff(this, cooldownManager));
         Objects.requireNonNull(getCommand("freeze")).setExecutor(new Staff(this, cooldownManager));
         Objects.requireNonNull(getCommand("staff")).setExecutor(new StaffMode(this));
+        Objects.requireNonNull(getCommand("vanish")).setExecutor(new Staff(this, cooldownManager));
     }
 
     public List<UUID> getStaff() {
@@ -93,5 +96,13 @@ public final class Main extends JavaPlugin {
 
     public Map<UUID, PlayerManager> getPlayers() {
         return players;
+    }
+
+    public List<UUID> getVanish() {
+        return vanish;
+    }
+
+    public boolean isVanish(Player player) {
+        return getVanish().contains(player.getUniqueId());
     }
 }

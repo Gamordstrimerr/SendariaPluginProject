@@ -22,3 +22,6 @@ commands:
   staff:
     description: Permet d'activer le mode de modération
     usage: /staff
+  vanish:
+    description: Permet de devenir invisible au yeux des joueurs
+    usage: /vanish
