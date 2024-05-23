@@ -6,7 +6,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,7 +29,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import java.util.*;
 
 public class StaffHandler implements Listener {
-    private Main plugin;
+    private final Main plugin;
     private static Inventory selPlayer;
     private Player target;
     private Player opener;
