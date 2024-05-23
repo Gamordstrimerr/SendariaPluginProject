@@ -4,6 +4,7 @@ import fr.gamordstrimer.testplugin.CooldownManager;
 import fr.gamordstrimer.testplugin.Main;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -92,11 +93,13 @@ public class Staff implements CommandExecutor {
             if(player.hasPermission("")) {
                 if (args.length == 0) {
                     if (plugin.isVanish(player)) {
+                        Bukkit.getOnlinePlayers().forEach(players -> players.showPlayer(plugin, player));
                         plugin.getVanish().remove(player.getUniqueId());
                         player.sendMessage(Component.text(prefixserver)
                                 .append(Component.text(" Vanish ")
-                                        .append(Component.text("Désactiver.").color(NamedTextColor.RED))));
+                                .append(Component.text("Désactiver.").color(NamedTextColor.RED))));
                     } else {
+                        Bukkit.getOnlinePlayers().forEach(players -> players.hidePlayer(plugin, player));
                         plugin.getVanish().add(player.getUniqueId());
                         player.sendMessage(Component.text(prefixserver)
                                 .append(Component.text(" Vanish ")

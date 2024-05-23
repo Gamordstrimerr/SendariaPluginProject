@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -50,6 +51,7 @@ public class StaffMode implements CommandExecutor {
                         .append(Component.text(" vous n'êtes plus en mode modération.").color(TextColor.fromHexString("#9e0000"))));
                 pm.giveInventory();
                 pm.destroy();
+                player.sendActionBar(Component.empty());
                 return true;
             }
             PlayerManager pm = new PlayerManager(player);
@@ -59,9 +61,17 @@ public class StaffMode implements CommandExecutor {
                     .append(Component.text(" vous êtes en mode modération").color(TextColor.fromHexString("#9e0000"))));
             pm.saveInventory();
 
-            /**
-             * TODO ITEMSTACK
-             */
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (!plugin.getStaff().contains(player.getUniqueId())) {
+                        // Stop the task if the player is no longer in staff mode
+                        cancel();
+                        return;
+                    }
+                    player.sendActionBar(Component.text("⚠ Vous êtes en mode modération").color(NamedTextColor.RED));
+                }
+            }.runTaskTimer(plugin, 0, 20);
 
             player.getInventory().setItem(0, staffItems.get("compass"));
             if(plugin.isVanish(player)) {
@@ -86,7 +96,7 @@ public class StaffMode implements CommandExecutor {
         ItemStack compass = new ItemStack(Material.COMPASS);
         ItemMeta compassMeta = compass.getItemMeta();
         if (compassMeta != null) {
-            compassMeta.displayName(Component.text("Séléctionne un Joueur").color(NamedTextColor.DARK_PURPLE).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false));
+            compassMeta.displayName(Component.text("Séléctionnez un Joueur").color(NamedTextColor.DARK_PURPLE).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false));
             List<Component> lore = new ArrayList<>();
             lore.add(Component.text("------------------------").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.STRIKETHROUGH, true));
             lore.add(Component.text(" "));
@@ -144,8 +154,8 @@ public class StaffMode implements CommandExecutor {
         staffItems.put("paper", paper);
 
         ItemStack headStaff = new ItemStack(Material.PLAYER_HEAD);
-        String base64Texture = "eyJ0aW1lc3RhbXAiOjE1ODcwNTA5MDgwNTMsInByb2ZpbGVJZCI6IjkxZjA0ZmU5MGYzNjQzYjU4ZjIwZTMzNzVmODZkMzllIiwicHJvZmlsZU5hbWUiOiJTdG9ybVN0b3JteSIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODQ2ZjU0NDBiNTlkMjhlYjVjOTlkMGZkMWZkYTQ2N2MzZTRiYjUwMmVhYzNiM2VjYjIyOTY5ZGQyMzU5MTRmYyJ9fX0=";
-        SkullTextureChanger.setSkullTexture(headStaff, base64Texture);
+        String base64Texture1 = "eyJ0aW1lc3RhbXAiOjE1ODcwNTA5MDgwNTMsInByb2ZpbGVJZCI6IjkxZjA0ZmU5MGYzNjQzYjU4ZjIwZTMzNzVmODZkMzllIiwicHJvZmlsZU5hbWUiOiJTdG9ybVN0b3JteSIsInNpZ25hdHVyZVJlcXVpcmVkIjp0cnVlLCJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODQ2ZjU0NDBiNTlkMjhlYjVjOTlkMGZkMWZkYTQ2N2MzZTRiYjUwMmVhYzNiM2VjYjIyOTY5ZGQyMzU5MTRmYyJ9fX0=";
+        SkullTextureChanger.setSkullTexture(headStaff, base64Texture1);
         SkullMeta headStaffMeta = (SkullMeta) headStaff.getItemMeta();
         if (headStaffMeta != null) {
             headStaffMeta.displayName(Component.text("Voir les Modérateurs Connectés").color(NamedTextColor.DARK_RED).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false));
@@ -206,6 +216,22 @@ public class StaffMode implements CommandExecutor {
             chest.setItemMeta(chestMeta);
         }
         staffItems.put("chest", chest);
+
+        ItemStack diceRandom = new ItemStack(Material.PLAYER_HEAD);
+        String base64Texture2 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmUyMmMyOThlN2M2MzM2YWYxNzkwOWFjMWYxZWU2ODM0YjU4YjFhM2NjOTlhYmEyNTVjYTdlYWViNDc2MTczIn19fQ==";
+        SkullTextureChanger.setSkullTexture(diceRandom, base64Texture2);
+        SkullMeta diceRandomMeta = (SkullMeta) diceRandom.getItemMeta();
+        if (diceRandomMeta != null) {
+            diceRandomMeta.displayName(Component.text("Téléportation Aléatoire").color(NamedTextColor.AQUA).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false));
+            List<Component> lore = new ArrayList<>();
+            lore.add(Component.text(" "));
+            lore.add(Component.text("\uD83C\uDFB2 Clique pour te Téléporter").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text("   à un joueur aléatoire").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text(" "));
+            diceRandomMeta.lore(lore);
+            diceRandom.setItemMeta(diceRandomMeta);
+        }
+        staffItems.put("dicerandom", diceRandom);
     }
 
     public static StaffMode getInstance() {
