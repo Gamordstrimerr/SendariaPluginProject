@@ -11,6 +11,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -48,7 +49,7 @@ public class StaffMode implements CommandExecutor {
                 plugin.getStaff().remove(player.getUniqueId());
                 player.getInventory().clear();
                 player.sendMessage(Component.text(prefixserver)
-                        .append(Component.text(" vous n'êtes plus en mode modération.").color(TextColor.fromHexString("#9e0000"))));
+                        .append(Component.text("Vous n'êtes plus en mode modération.").color(TextColor.fromHexString("#9e0000"))));
                 pm.giveInventory();
                 pm.destroy();
                 player.sendActionBar(Component.empty());
@@ -58,7 +59,7 @@ public class StaffMode implements CommandExecutor {
             pm.init();
             plugin.getStaff().add(player.getUniqueId());
             player.sendMessage(Component.text(prefixserver)
-                    .append(Component.text(" vous êtes en mode modération").color(TextColor.fromHexString("#9e0000"))));
+                    .append(Component.text("Vous êtes en mode modération").color(TextColor.fromHexString("#9e0000"))));
             pm.saveInventory();
 
             new BukkitRunnable() {
@@ -87,7 +88,7 @@ public class StaffMode implements CommandExecutor {
 
             return true;
         } else {
-            player.sendMessage(Component.text(prefixserver + " " + perms));
+            player.sendMessage(Component.text(prefixserver + perms));
             return false;
         }
     }
@@ -100,7 +101,9 @@ public class StaffMode implements CommandExecutor {
             List<Component> lore = new ArrayList<>();
             lore.add(Component.text("------------------------").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.STRIKETHROUGH, true));
             lore.add(Component.text(" "));
-            lore.add(Component.text("➤ Clique Droit pour se Téléporter").color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text("➤ Clique Droit pour Séléctionner un Joueur").color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text(" "));
+            lore.add(Component.text("➤ Clique Gauche pour se Téléporter").color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
             lore.add(Component.text(" "));
             lore.add(Component.text("------------------------").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.STRIKETHROUGH, true));
             compassMeta.lore(lore);
@@ -184,6 +187,23 @@ public class StaffMode implements CommandExecutor {
             ice.setItemMeta(iceMeta);
         }
         staffItems.put("ice", ice);
+
+        ItemStack unice = new ItemStack(Material.ICE);
+        ItemMeta uniceMeta = unice.getItemMeta();
+        if (uniceMeta != null) {
+            uniceMeta.displayName(Component.text("Dégèle le Joueur").color(NamedTextColor.BLUE).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false));
+            List<Component> lore = new ArrayList<>();
+            lore.add(Component.text("------------------------").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.STRIKETHROUGH, true));
+            lore.add(Component.text(" "));
+            lore.add(Component.text("➤ Clique Droit pour Dégelé le Joueur").color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text(" "));
+            lore.add(Component.text("------------------------").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.STRIKETHROUGH, true));
+            uniceMeta.lore(lore);
+            uniceMeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+            uniceMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            unice.setItemMeta(uniceMeta);
+        }
+        staffItems.put("unice", unice);
 
         ItemStack stick = new ItemStack(Material.STICK);
         ItemMeta stickMeta = stick.getItemMeta();

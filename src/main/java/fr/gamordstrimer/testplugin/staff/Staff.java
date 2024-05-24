@@ -35,14 +35,14 @@ public class Staff implements CommandExecutor {
             if(player.hasPermission("")) {
                 if (args.length == 0) {
                     cooldownManager.removeCooldown(player.getUniqueId());
-                    player.sendMessage(prefixserver + " Votre cooldown à été réinitialisé.");
+                    player.sendMessage(prefixserver + "Votre cooldown à été réinitialisé.");
                 } else if (args.length == 1) {
                     Player target = player.getServer().getPlayer(args[0]);
                     if (target != null) {
                         cooldownManager.removeCooldown(target.getUniqueId());
-                        player.sendMessage(prefixserver + " le cooldown de " + target.getName() + " à été réinitialisé.");
+                        player.sendMessage(prefixserver + "Le cooldown de " + target.getName() + " à été réinitialisé.");
                     } else {
-                        player.sendMessage(prefixserver + " Joueur non trouvé.");
+                        player.sendMessage(prefixserver + "Joueur non trouvé.");
                     }
                 } else {
                     player.sendMessage(Component.text(prefixserver)
@@ -51,7 +51,7 @@ public class Staff implements CommandExecutor {
                 }
                 return true;
             } else {
-                player.sendMessage(prefixserver + " " +perms);
+                player.sendMessage(prefixserver + perms);
             }
         } else if (command.getName().equalsIgnoreCase("freeze")) {
             if (!(sender instanceof Player player)) {
@@ -64,18 +64,18 @@ public class Staff implements CommandExecutor {
                     if (target != null) {
                         if(plugin.getFreezedplayer().containsKey(target.getUniqueId())) {
                             plugin.getFreezedplayer().remove(target.getUniqueId());
-                            player.sendMessage(Component.text(prefixserver).append(Component.text(" " + target.getName()).color(NamedTextColor.DARK_RED))
+                            player.sendMessage(Component.text(prefixserver).append(Component.text(target.getName()).color(NamedTextColor.DARK_RED))
                                     .append(Component.text(" à été Degelé.").color(NamedTextColor.RED)));
                             target.sendMessage(Component.text(prefixserver).append(Component.text(" Vous avez été Degelé.").color(NamedTextColor.RED)));
                         } else {
                             plugin.getFreezedplayer().put(target.getUniqueId(), target.getLocation());
-                            player.sendMessage(Component.text(prefixserver).append(Component.text(" " + target.getName()).color(NamedTextColor.DARK_RED))
+                            player.sendMessage(Component.text(prefixserver).append(Component.text(target.getName()).color(NamedTextColor.DARK_RED))
                                     .append(Component.text(" à été Gelé.").color(NamedTextColor.RED)));
                             target.sendMessage(Component.text(prefixserver).append(Component.text(" Vous avez été Gelé.").color(NamedTextColor.RED)));
                         }
 
                     } else {
-                        player.sendMessage(prefixserver + " Joueur non trouvé.");
+                        player.sendMessage(prefixserver + "Joueur non trouvé.");
                     }
                 } else {
                     player.sendMessage(Component.text(prefixserver)
@@ -83,7 +83,7 @@ public class Staff implements CommandExecutor {
                             .append(Component.text("/freeze [player]").color(NamedTextColor.GOLD))));
                 }
             } else {
-                player.sendMessage(prefixserver + " " +perms);
+                player.sendMessage(prefixserver + perms);
             }
         } else if (command.getName().equalsIgnoreCase("vanish")) {
             if (!(sender instanceof Player player)) {
@@ -96,22 +96,22 @@ public class Staff implements CommandExecutor {
                         Bukkit.getOnlinePlayers().forEach(players -> players.showPlayer(plugin, player));
                         plugin.getVanish().remove(player.getUniqueId());
                         player.sendMessage(Component.text(prefixserver)
-                                .append(Component.text(" Vanish ")
+                                .append(Component.text("Vanish ")
                                 .append(Component.text("Désactiver.").color(NamedTextColor.RED))));
                     } else {
                         Bukkit.getOnlinePlayers().forEach(players -> players.hidePlayer(plugin, player));
                         plugin.getVanish().add(player.getUniqueId());
                         player.sendMessage(Component.text(prefixserver)
-                                .append(Component.text(" Vanish ")
+                                .append(Component.text("Vanish ")
                                 .append(Component.text("Activé.").color(NamedTextColor.GREEN))));
                     }
                 } else {
                     player.sendMessage(Component.text(prefixserver)
-                            .append(Component.text(" Utilisation : ")
+                            .append(Component.text("Utilisation : ")
                             .append(Component.text("/vanish").color(NamedTextColor.GOLD))));
                 }
             } else {
-                player.sendMessage(prefixserver + " " +perms);
+                player.sendMessage(prefixserver + perms);
             }
         }
         // Add more commands here if needed
