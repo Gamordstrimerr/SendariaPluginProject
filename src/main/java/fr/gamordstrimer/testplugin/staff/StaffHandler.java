@@ -120,23 +120,27 @@ public class StaffHandler implements Listener {
                             }
                             break;
                         case "disable_vanish":
-                            if(event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
+                            if(isRightClick) {
                                 Bukkit.getOnlinePlayers().forEach(players -> players.showPlayer(plugin, player));
                                 plugin.getVanish().remove(player.getUniqueId());
                                 player.sendMessage(Component.text(prefixServer)
                                         .append(Component.text(" Vanish ")
-                                                .append(Component.text("Désactiver.").color(NamedTextColor.RED))));
-                                player.getInventory().setItem(1, StaffMode.getInstance().getStaffItems().get("enable_vanish"));
+                                        .append(Component.text("Désactiver.").color(NamedTextColor.RED))));
+                                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                                    player.getInventory().setItem(1, StaffMode.getInstance().getStaffItems().get("enable_vanish"));
+                                }, 1L);
                             }
                             break;
                         case "enable_vanish":
-                            if(event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
+                            if(isRightClick) {
                                 Bukkit.getOnlinePlayers().forEach(players -> players.hidePlayer(plugin, player));
                                 plugin.getVanish().add(player.getUniqueId());
                                 player.sendMessage(Component.text(prefixServer)
                                         .append(Component.text(" Vanish ")
-                                                .append(Component.text("Activé.").color(NamedTextColor.GREEN))));
-                                player.getInventory().setItem(1, StaffMode.getInstance().getStaffItems().get("disable_vanish"));
+                                        .append(Component.text("Activé.").color(NamedTextColor.GREEN))));
+                                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                                    player.getInventory().setItem(1, StaffMode.getInstance().getStaffItems().get("disable_vanish"));
+                                }, 1L);
                             }
                             break;
                         case "paper":

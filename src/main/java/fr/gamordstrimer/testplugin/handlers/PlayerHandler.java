@@ -88,7 +88,7 @@ public class PlayerHandler implements Listener {
         }
     }
 
-    @EventHandler
+    /*@EventHandler
     public void onMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         World world = player.getWorld();
@@ -102,5 +102,5 @@ public class PlayerHandler implements Listener {
             // Player has moved, spawn cloud particles at the current location
             world.spawnParticle(Particle.CLOUD, player.getLocation(), 10, 0, 0, 0, 0); // Adjust particle parameters as needed
         }
-    }
+    }*/
 }
