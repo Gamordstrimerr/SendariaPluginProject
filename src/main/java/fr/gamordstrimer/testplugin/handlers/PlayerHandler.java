@@ -7,6 +7,7 @@ import fr.gamordstrimer.testplugin.heads.SkullTextureChanger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -18,8 +19,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
@@ -33,6 +33,8 @@ public class PlayerHandler implements Listener {
     private final CooldownManager cooldownManager;
     private static Inventory mainGUI;
     private static Map<String, ItemStack> setupItemGUI = new HashMap<>();
+    private static Map<String, Inventory> itemGUIs = new HashMap<>();
+
 
     public PlayerHandler(Main plugin, CooldownManager cooldownManager) {
         this.plugin = plugin;
@@ -108,9 +110,72 @@ public class PlayerHandler implements Listener {
         // Iterate over the entries of the map
         for (Map.Entry<String, ItemStack> entry : CustomItems.getCustomItems().entrySet()) {
             ItemStack item = entry.getValue();
+            String itemName = entry.getKey();
             mainGUI.addItem(item);
+            itemGUI(itemName, item);
         }
         player.openInventory(mainGUI);
+    }
+
+    public static void itemGUI(String itemName, ItemStack itemStack) {
+        Component displayNameComponent = CustomItems.getItem(itemName).getItemMeta().displayName();
+        String displayName = PlainTextComponentSerializer.plainText().serialize(Objects.requireNonNull(displayNameComponent));
+
+        Inventory itemGUI = Bukkit.createInventory(null, 9*5, Component.text(displayName).color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD,true));
+
+        Recipe recipe = CustomItems.getRecipe(itemName);
+
+        if (recipe != null) {
+            if (recipe instanceof ShapedRecipe shapedRecipe) {
+                Map<Character, ItemStack> ingredientMap = shapedRecipe.getIngredientMap();
+                String[] shape = shapedRecipe.getShape();
+
+                int index = 10;
+                for (String s : shape) {
+                    for (int col = 0; col < s.length(); col++) {
+                        char ingredientChar = s.charAt(col);
+                        if (ingredientChar != ' ') {
+                            ItemStack ingredient = ingredientMap.get(ingredientChar);
+                            if (ingredient != null) {
+                                itemGUI.setItem(index++, ingredient);
+                            }
+                        } else {
+                            ItemStack air = new ItemStack(Material.AIR);
+                            itemGUI.setItem(index++, air);
+                        }
+                    }
+                    index += 6; // Move to the next row in the GUI
+                }
+            } else if (recipe instanceof ShapelessRecipe shapelessRecipe) {
+                int index = 10; // Starting position in a 3x3 grid
+                for (ItemStack ingredient : shapelessRecipe.getIngredientList()) {
+                    itemGUI.setItem(index++, ingredient);
+                }
+            }
+        }
+
+        itemGUI.setItem(23, setupItemGUI.get("craftingtable"));
+        itemGUI.setItem(25, itemStack);
+        itemGUI.setItem(44, setupItemGUI.get("headback"));
+
+        // Fill empty slots with glass panes, except specific slots 10/11/12, 19/20/21, 28/29/30
+        ItemStack glassPane = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemMeta meta = glassPane.getItemMeta();
+        if (meta != null) {
+            meta.displayName(Component.text(" "));
+            glassPane.setItemMeta(meta);
+        }
+
+        // Set of slots to exclude
+        Set<Integer> excludedSlots = new HashSet<>(Arrays.asList(10, 11, 12, 19, 20, 21, 28, 29, 30));
+        for (int i = 0; i < 45; i++) {
+            if (itemGUI.getItem(i) == null && !excludedSlots.contains(i)) {
+                itemGUI.setItem(i, glassPane);
+            }
+        }
+
+        // Store the item GUI in the map
+        itemGUIs.put(itemName, itemGUI);
     }
 
     private static void setupItemGUI() {
