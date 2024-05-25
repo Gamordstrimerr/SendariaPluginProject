@@ -3,36 +3,41 @@ package fr.gamordstrimer.testplugin.handlers;
 import fr.gamordstrimer.testplugin.CooldownManager;
 import fr.gamordstrimer.testplugin.Main;
 import fr.gamordstrimer.testplugin.customitems.CustomItems;
+import fr.gamordstrimer.testplugin.heads.SkullTextureChanger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
-import org.bukkit.Particle;
-import org.bukkit.World;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerHandler implements Listener {
     private final Main plugin;
     private final ItemStack magicLantern;
     private final CooldownManager cooldownManager;
+    private static Inventory mainGUI;
+    private static Map<String, ItemStack> setupItemGUI = new HashMap<>();
 
     public PlayerHandler(Main plugin, CooldownManager cooldownManager) {
         this.plugin = plugin;
         this.magicLantern = CustomItems.getItem("magic_lantern");
         this.cooldownManager = cooldownManager;
-        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler
@@ -88,19 +93,49 @@ public class PlayerHandler implements Listener {
         }
     }
 
-    /*@EventHandler
-    public void onMove(PlayerMoveEvent event) {
-        Player player = event.getPlayer();
-        World world = player.getWorld();
-        // Get the previous location of the player
-        double prevX = event.getFrom().getX();
-        double prevY = event.getFrom().getY();
-        double prevZ = event.getFrom().getZ();
-
-        // Check if the player has moved
-        if (prevX != event.getTo().getX() || prevY != event.getTo().getY() || prevZ != event.getTo().getZ()) {
-            // Player has moved, spawn cloud particles at the current location
-            world.spawnParticle(Particle.CLOUD, player.getLocation(), 10, 0, 0, 0, 0); // Adjust particle parameters as needed
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        Player player = (Player) event.getWhoClicked();
+        Inventory clickedInventory = event.getClickedInventory();
+        ItemStack clickedItem = event.getCurrentItem();
+        if (clickedInventory != null && clickedInventory.equals(mainGUI)) {
+            event.setCancelled(true);
         }
-    }*/
+    }
+
+    public static void mainGUI(Player player) {
+        mainGUI = Bukkit.createInventory(null, 9*5, Component.text("Custom Item de Sendaria").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true));
+        // Iterate over the entries of the map
+        for (Map.Entry<String, ItemStack> entry : CustomItems.getCustomItems().entrySet()) {
+            ItemStack item = entry.getValue();
+            mainGUI.addItem(item);
+        }
+        player.openInventory(mainGUI);
+    }
+
+    private static void setupItemGUI() {
+
+        //headback in menu (go back)
+        ItemStack headback = new ItemStack(Material.PLAYER_HEAD);
+        String base64Texture = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjZkOGVmZjRjNjczZTA2MzY5MDdlYTVjMGI1ZmY0ZjY0ZGMzNWM2YWFkOWI3OTdmMWRmNjYzMzUxYjRjMDgxNCJ9fX0=";
+        SkullTextureChanger.setSkullTexture(headback, base64Texture);
+        SkullMeta headbackmeta = (SkullMeta) headback.getItemMeta();
+        headbackmeta.displayName(Component.text("Retour").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false));
+        headback.setItemMeta(headbackmeta);
+        setupItemGUI.put("headback", headback);
+
+        // crafting table
+        ItemStack craftingtable = new ItemStack(Material.CRAFTING_TABLE);
+        ItemMeta craftingtablemeta = craftingtable.getItemMeta();
+        craftingtablemeta.displayName(Component.text("Table de Craft").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false));
+        List<Component> lore = new ArrayList<>();
+        lore.add(Component.text("━━━━━━━━━━━━━━━━━━━━").color(NamedTextColor.GRAY));
+        lore.add(Component.text("Cette Item peut être").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+        lore.add(Component.text("fabriqué dans une").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+        lore.add(Component.text("Table de Craft").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false));
+        lore.add(Component.text("━━━━━━━━━━━━━━━━━━━━").color(NamedTextColor.GRAY));
+        craftingtablemeta.lore(lore);
+        craftingtable.setItemMeta(craftingtablemeta);
+        setupItemGUI.put("craftingtable", craftingtable);
+    }
 }

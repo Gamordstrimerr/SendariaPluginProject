@@ -10,6 +10,7 @@ import fr.gamordstrimer.testplugin.staff.PlayerManager;
 import fr.gamordstrimer.testplugin.staff.Staff;
 import fr.gamordstrimer.testplugin.staff.StaffHandler;
 import fr.gamordstrimer.testplugin.staff.StaffMode;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -30,17 +31,8 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         getLogger().info("TestPlugin has been enabled!"); // Message sent in the console at the start of the plugin
-        setup();
-    }
 
-    @Override
-    public void onDisable() {
-        cooldownManager.saveCooldowns(); // Save cooldowns before shutting down the server
-    }
-
-    // ================================================
-
-    private void setup() {
+        //Config
         getConfig().options().copyDefaults();
         saveDefaultConfig();
 
@@ -55,28 +47,30 @@ public final class Main extends JavaPlugin {
         // Registering elements
         CustomItems.init(this);
         PlayerManager.setPlugin(this);
-        registerCommands();
-        registerEvents();
-    }
 
-    private void registerEvents() {
-        new PlayerHandler(this, cooldownManager);
-        new ArmorHandler(this); // Pass logger to ArmorHandler constructor
-        new ItemframeHandler(this);
-        new StaffHandler(this);
-    }
-
-    private void registerCommands() {
+        //register Commands
         Objects.requireNonNull(getCommand("customitemsgive")).setExecutor(new CustomItemsGive(this));
         Objects.requireNonNull(getCommand("customitemsgive")).setTabCompleter(new CustomItemsGive(this));
-        Objects.requireNonNull(getCommand("customitemsrecipes")).setExecutor(new CustomItemsRecipes(this, getLogger()));
-
+        Objects.requireNonNull(getCommand("customitemsrecipes")).setExecutor(new CustomItemsRecipes());
         // Staff commands
         Objects.requireNonNull(getCommand("resetcooldown")).setExecutor(new Staff(this, cooldownManager));
         Objects.requireNonNull(getCommand("freeze")).setExecutor(new Staff(this, cooldownManager));
         Objects.requireNonNull(getCommand("staff")).setExecutor(new StaffMode(this));
         Objects.requireNonNull(getCommand("vanish")).setExecutor(new Staff(this, cooldownManager));
+
+        //register Event
+        Bukkit.getPluginManager().registerEvents(new ArmorHandler(this), this);
+        Bukkit.getPluginManager().registerEvents(new ItemframeHandler(this), this);
+        Bukkit.getPluginManager().registerEvents(new StaffHandler(this), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerHandler(this, cooldownManager), this);
     }
+
+    @Override
+    public void onDisable() {
+        cooldownManager.saveCooldowns(); // Save cooldowns before shutting down the server
+    }
+
+    // ================================================
 
     public List<UUID> getStaff() {
         return staff;

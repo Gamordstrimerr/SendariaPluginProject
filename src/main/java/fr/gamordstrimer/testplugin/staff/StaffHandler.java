@@ -41,7 +41,6 @@ public class StaffHandler implements Listener {
     public StaffHandler(Main plugin) {
         this.plugin = plugin;
         selPlayer = Bukkit.createInventory(null, 9*5, Component.text("Séléctionnez un joueur").color(NamedTextColor.DARK_PURPLE));
-        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler

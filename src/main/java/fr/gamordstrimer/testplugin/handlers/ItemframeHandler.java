@@ -16,7 +16,6 @@ public class ItemframeHandler implements Listener {
 
     public ItemframeHandler (Main plugin) {
         this.plugin = plugin;
-        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler

@@ -19,7 +19,6 @@ public class ArmorHandler implements Listener {
     private final List<ItemStack> curseArmorList;
 
     public ArmorHandler(Main plugin) {
-        Bukkit.getPluginManager().registerEvents(this, plugin);
         curseArmorList = Arrays.asList(
                 CustomItems.getItem("curse_helmet"),
                 CustomItems.getItem("curse_chestplate"),
