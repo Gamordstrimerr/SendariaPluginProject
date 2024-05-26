@@ -40,6 +40,7 @@ public class PlayerHandler implements Listener {
         this.plugin = plugin;
         this.magicLantern = CustomItems.getItem("magic_lantern");
         this.cooldownManager = cooldownManager;
+        setupItemGUI();
     }
 
     @EventHandler
@@ -97,13 +98,47 @@ public class PlayerHandler implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
+        if (!(event.getWhoClicked() instanceof Player)) {
+            return;
+        }
+
         Player player = (Player) event.getWhoClicked();
-        Inventory clickedInventory = event.getClickedInventory();
         ItemStack clickedItem = event.getCurrentItem();
-        if (clickedInventory != null && clickedInventory.equals(mainGUI)) {
-            event.setCancelled(true);
+        Inventory openInventory = player.getOpenInventory().getTopInventory();
+
+        if (openInventory.equals(mainGUI)) {
+            event.setCancelled(true); // Prevent the default behavior
+
+            if (clickedItem == null || clickedItem.getType() == Material.AIR) {
+                return;
+            }
+
+            // Find the item name from the clicked item
+            for (Map.Entry<String, ItemStack> entry : CustomItems.getCustomItems().entrySet()) {
+                if (clickedItem.isSimilar(entry.getValue())) {
+                    String itemName = entry.getKey();
+
+                    // Open the corresponding item GUI
+                    Inventory itemInventory = itemGUIs.get(itemName);
+                    if (itemInventory != null) {
+                        player.openInventory(itemInventory);
+                    }
+                    return;
+                }
+            }
+        }
+        for (Inventory inventory : itemGUIs.values()) {
+            if (openInventory.equals(inventory)) {
+                event.setCancelled(true); // Prevent the default behavior
+                if (clickedItem != null && clickedItem.isSimilar(setupItemGUI.get("headback"))) {
+                    // Go back to the main GUI
+                    player.openInventory(mainGUI);
+                }
+                return;
+            }
         }
     }
+
 
     public static void mainGUI(Player player) {
         mainGUI = Bukkit.createInventory(null, 9*5, Component.text("Custom Item de Sendaria").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true));
@@ -121,7 +156,7 @@ public class PlayerHandler implements Listener {
         Component displayNameComponent = CustomItems.getItem(itemName).getItemMeta().displayName();
         String displayName = PlainTextComponentSerializer.plainText().serialize(Objects.requireNonNull(displayNameComponent));
 
-        Inventory itemGUI = Bukkit.createInventory(null, 9*5, Component.text(displayName).color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD,true));
+        Inventory itemGUI = Bukkit.createInventory(null, 9 * 5, Component.text(displayName).color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true));
 
         Recipe recipe = CustomItems.getRecipe(itemName);
 
@@ -152,9 +187,23 @@ public class PlayerHandler implements Listener {
                     itemGUI.setItem(index++, ingredient);
                 }
             }
+
+            itemGUI.setItem(23, setupItemGUI.get("craftingtable"));
+        } else {
+            // Fill crafting slots with barriers
+            ItemStack barrier = new ItemStack(Material.BARRIER);
+            ItemMeta barrierMeta = barrier.getItemMeta();
+            if (barrierMeta != null) {
+                barrierMeta.displayName(Component.text("Pas de Recette Disponible").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false));
+                barrier.setItemMeta(barrierMeta);
+            }
+
+            int[] craftingSlots = {10, 11, 12, 19, 20, 21, 28, 29, 30};
+            for (int slot : craftingSlots) {
+                itemGUI.setItem(slot, barrier);
+            }
         }
 
-        itemGUI.setItem(23, setupItemGUI.get("craftingtable"));
         itemGUI.setItem(25, itemStack);
         itemGUI.setItem(44, setupItemGUI.get("headback"));
 
@@ -178,7 +227,8 @@ public class PlayerHandler implements Listener {
         itemGUIs.put(itemName, itemGUI);
     }
 
-    private static void setupItemGUI() {
+
+    private void setupItemGUI() {
 
         //headback in menu (go back)
         ItemStack headback = new ItemStack(Material.PLAYER_HEAD);
