@@ -1,10 +1,11 @@
 package fr.gamordstrimer.testplugin.staff;
 
 import fr.gamordstrimer.testplugin.Main;
+import fr.gamordstrimer.testplugin.menusystem.menu.InvseeGUI;
+import fr.gamordstrimer.testplugin.menusystem.menu.SelPlayerGUI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -21,7 +22,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -34,13 +34,9 @@ import java.util.*;
 
 public class StaffHandler implements Listener {
     private final Main plugin;
-    private static Inventory selPlayer;
     private static Inventory invSee;
-    private Player target;
-    private Player opener;
     public StaffHandler(Main plugin) {
         this.plugin = plugin;
-        selPlayer = Bukkit.createInventory(null, 9*5, Component.text("Séléctionnez un joueur").color(NamedTextColor.DARK_PURPLE));
     }
 
     @EventHandler
@@ -73,7 +69,6 @@ public class StaffHandler implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        Bukkit.getScheduler().runTaskLater(plugin, StaffHandler.this::updateSelPlayerGUI, 20);
         Player player = event.getPlayer();
         for(int i = 0; i < plugin.getVanish().size(); i++) {
             UUID vanishedPlayerUUID = plugin.getVanish().get(i);
@@ -82,11 +77,6 @@ public class StaffHandler implements Listener {
                 player.hidePlayer(plugin, vanishedPlayer);
             }
         }
-    }
-
-    @EventHandler
-    public void onQuit(PlayerQuitEvent event) {
-        Bukkit.getScheduler().runTaskLater(plugin, StaffHandler.this::updateSelPlayerGUI, 20);
     }
 
     @EventHandler
@@ -108,8 +98,7 @@ public class StaffHandler implements Listener {
                     switch (entry.getKey()) {
                         case "compass":
                             if(isRightClick) {
-                                DefineOpener(player);
-                                selPlayerGUI(player);
+                                new SelPlayerGUI(Main.getPlayerMenuUtility(player)).open();
                             } else if (isLeftClick) {
                                 if(target != null) {
                                     player.teleport(target);
@@ -192,7 +181,7 @@ public class StaffHandler implements Listener {
                         case "chest":
                             if(isRightClick) {
                                 if (target != null) {
-                                    invSeeGUI(player);
+                                    new InvseeGUI(Main.getPlayerMenuUtility(player)).open();
                                     startInvSeeGUILoop(player);
                                 } else {
                                     player.sendMessage(Component.text(prefixServer)
@@ -216,45 +205,6 @@ public class StaffHandler implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         if(event.getCurrentItem() == null)  return;
         Player player = (Player) event.getWhoClicked();
-        String prefixserver = Objects.requireNonNull(plugin.getConfig().getString("messages.prefixserver")).replace("&", "§");
-        Inventory inventory = event.getInventory();
-        ItemStack item = event.getCurrentItem();
-        if (inventory.equals(selPlayer)) {
-            event.setCancelled(true);
-            int lastSlot = inventory.getSize() - 1;
-            if(event.getSlot() == lastSlot) {
-                List<Player> onlinePlayers = new ArrayList<>(Bukkit.getOnlinePlayers());
-                if (onlinePlayers.size() > 1) {
-                    onlinePlayers.remove(player);
-                    Player targetPlayer = onlinePlayers.get(new Random().nextInt(onlinePlayers.size()));
-                    DefineTarget(targetPlayer);
-                    player.teleport(target);
-                    player.sendMessage(Component.text(prefixserver)
-                            .append(Component.text("Tu as été téléporter à ")
-                            .append(Component.text(target.getName()).color(NamedTextColor.GOLD)
-                            .append(Component.text(".").color(NamedTextColor.WHITE)))));
-                } else {
-                    player.sendMessage(Component.text(prefixserver).append(Component.text("Il n'y a pas assez de joueur en ligne pour utiliser cette fonction !").color(NamedTextColor.RED)));
-                }
-            } else {
-                if (item != null && item.getType() == Material.PLAYER_HEAD) {
-                    String playerName = PlainTextComponentSerializer.plainText().serialize(Objects.requireNonNull(item.getItemMeta().displayName()));
-                    Player selplayer = Bukkit.getPlayerExact(playerName);
-                    if (selplayer != null && player != selplayer) {
-                        DefineTarget(selplayer);
-                        player.teleport(target);
-                        player.sendMessage(Component.text(prefixserver)
-                                .append(Component.text("Tu as été téléporter à ")
-                                .append(Component.text(target.getName()).color(NamedTextColor.GOLD)
-                                .append(Component.text(".").color(NamedTextColor.WHITE)))));
-                    } else {
-                        player.sendMessage(Component.text(prefixserver).append(Component.text("Joueur Invalide.").color(NamedTextColor.RED)));
-                    }
-                    player.closeInventory();
-                }
-            }
-        }
-
         event.setCancelled(plugin.isInStaff(player) || plugin.isFreeze(player));
     }
 
@@ -278,90 +228,6 @@ public class StaffHandler implements Listener {
         if(plugin.isFreeze(player)) {
             event.setTo(event.getFrom());
         }
-    }
-
-    public void selPlayerGUI(Player player) {
-        selPlayer.clear();
-        Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
-        Set<UUID> addedPlayers = new HashSet<>(); // Track added players
-
-        for (Player onlinePlayer : onlinePlayers) {
-            if (addedPlayers.contains(onlinePlayer.getUniqueId())) {
-                continue;
-            }
-
-            ItemStack headItem = new ItemStack(Material.PLAYER_HEAD);
-            SkullMeta skullMeta = (SkullMeta) headItem.getItemMeta();
-            assert skullMeta != null;
-            skullMeta.setPlayerProfile(onlinePlayer.getPlayerProfile());
-            skullMeta.displayName(Component.text(onlinePlayer.getName()).color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
-            List<Component> lore = new ArrayList<>();
-            if(opener != null && onlinePlayer.getUniqueId().equals(opener.getUniqueId())) {
-                lore.add(Component.text(" "));
-                lore.add(Component.text("⚠ Tu ne peux pas te").color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
-                lore.add(Component.text("   téléporter à toi même.").color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
-                lore.add(Component.text(" "));
-            } else {
-                lore.add(Component.text(" "));
-                lore.add(Component.text("➢ Clique pour te Téléporter").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
-                lore.add(Component.text(" "));
-            }
-            skullMeta.lore(lore);
-            headItem.setItemMeta(skullMeta);
-            selPlayer.addItem(headItem);
-
-            addedPlayers.add(onlinePlayer.getUniqueId());
-        }
-
-        int invsize = selPlayer.getSize();
-        int lastslot = invsize - 1;
-        selPlayer.setItem(lastslot, StaffMode.getInstance().getStaffItems().get("dicerandom"));
-
-        player.openInventory(selPlayer);
-    }
-
-    public void updateSelPlayerGUI() {
-        selPlayer.clear();
-        Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
-        Set<UUID> addedPlayers = new HashSet<>(); // Track added players
-
-        for (Player onlinePlayer : onlinePlayers) {
-            if (addedPlayers.contains(onlinePlayer.getUniqueId())) {
-                continue;
-            }
-
-            ItemStack headItem = new ItemStack(Material.PLAYER_HEAD);
-            SkullMeta skullMeta = (SkullMeta) headItem.getItemMeta();
-            assert skullMeta != null;
-            skullMeta.setPlayerProfile(onlinePlayer.getPlayerProfile());
-            skullMeta.displayName(Component.text(onlinePlayer.getName()).color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
-            List<Component> lore = new ArrayList<>();
-            if(opener != null && onlinePlayer.getUniqueId().equals(opener.getUniqueId())) {
-                lore.add(Component.text(" "));
-                lore.add(Component.text("⚠ Tu ne peux pas te").color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
-                lore.add(Component.text("   téléporter à toi même.").color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
-                lore.add(Component.text(" "));
-            } else {
-                lore.add(Component.text(" "));
-                lore.add(Component.text("➢ Clique pour te Téléporter").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
-                lore.add(Component.text(" "));
-            }
-            skullMeta.lore(lore);
-            headItem.setItemMeta(skullMeta);
-            selPlayer.addItem(headItem);
-
-            addedPlayers.add(onlinePlayer.getUniqueId());
-        }
-
-        int invsize = selPlayer.getSize();
-        int lastslot = invsize - 1;
-        selPlayer.setItem(lastslot, StaffMode.getInstance().getStaffItems().get("dicerandom"));
-    }
-
-    public void invSeeGUI(Player player) {
-        invSee = Bukkit.createInventory(null, 9*5, Component.text("Inventaire de ").append(Component.text(target.getName()).color(NamedTextColor.GOLD)));
-        updateInvSeeGUI();
-        player.openInventory(invSee);
     }
 
     public void updateInvSeeGUI() {
@@ -415,13 +281,5 @@ public class StaffHandler implements Listener {
 
         // Store the BukkitRunnable in the player's metadata so it can be canceled when the inventory is closed
         player.setMetadata("InvSeeTask", new FixedMetadataValue(plugin, task));
-    }
-
-    public void DefineTarget(Player player) {
-        target = player;
-    }
-
-    public void DefineOpener(Player player) {
-        opener = player;
     }
 }

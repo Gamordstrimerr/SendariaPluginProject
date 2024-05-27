@@ -1,8 +1,7 @@
-package fr.gamordstrimer.testplugin.handlers;
+package fr.gamordstrimer.testplugin.Listener;
 
 import fr.gamordstrimer.testplugin.Main;
 import fr.gamordstrimer.testplugin.customitems.CustomItems;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

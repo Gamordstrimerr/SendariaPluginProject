@@ -1,11 +1,11 @@
 package fr.gamordstrimer.testplugin;
 
+import fr.gamordstrimer.testplugin.Listener.*;
 import fr.gamordstrimer.testplugin.commands.CustomItemsRecipes;
 import fr.gamordstrimer.testplugin.commands.CustomItemsGive;
 import fr.gamordstrimer.testplugin.customitems.CustomItems;
-import fr.gamordstrimer.testplugin.handlers.ArmorHandler;
-import fr.gamordstrimer.testplugin.handlers.ItemframeHandler;
-import fr.gamordstrimer.testplugin.handlers.PlayerHandler;
+import fr.gamordstrimer.testplugin.menusystem.PlayerMenuUtility;
+import fr.gamordstrimer.testplugin.menusystem.menu.SelPlayerGUI;
 import fr.gamordstrimer.testplugin.staff.PlayerManager;
 import fr.gamordstrimer.testplugin.staff.Staff;
 import fr.gamordstrimer.testplugin.staff.StaffHandler;
@@ -19,10 +19,12 @@ import java.util.*;
 
 public final class Main extends JavaPlugin {
     private CooldownManager cooldownManager;
+    private static Main instance;
     private List<UUID> staff;
     private List<UUID> vanish;
     private Map<UUID, Location> freezedplayer;
     private Map<UUID, PlayerManager> players = new HashMap<>();
+    private static final HashMap<Player, PlayerMenuUtility> playerMenuUtilityMap = new HashMap<>();
 
     // ================================================
     //              onEnable() & onDisable()
@@ -40,6 +42,7 @@ public final class Main extends JavaPlugin {
         cooldownManager = new CooldownManager(getDataFolder());
 
         // Initialize Variable
+        instance = this;
         staff = new ArrayList<>();
         vanish = new ArrayList<>();
         freezedplayer = new HashMap<>();
@@ -59,18 +62,33 @@ public final class Main extends JavaPlugin {
         Objects.requireNonNull(getCommand("vanish")).setExecutor(new Staff(this, cooldownManager));
 
         //register Event
-        Bukkit.getPluginManager().registerEvents(new ArmorHandler(this), this);
-        Bukkit.getPluginManager().registerEvents(new ItemframeHandler(this), this);
-        Bukkit.getPluginManager().registerEvents(new StaffHandler(this), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerHandler(this, cooldownManager), this);
+        getServer().getPluginManager().registerEvents(new ArmorHandler(this), this);
+        getServer().getPluginManager().registerEvents(new ItemframeHandler(this), this);
+        getServer().getPluginManager().registerEvents(new StaffHandler(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerHandler(this, cooldownManager), this);
+        getServer().getPluginManager().registerEvents(new MenuListener(), this);
     }
 
     @Override
     public void onDisable() {
         cooldownManager.saveCooldowns(); // Save cooldowns before shutting down the server
+        instance = null;
     }
 
     // ================================================
+
+    public static PlayerMenuUtility getPlayerMenuUtility(Player player) {
+        PlayerMenuUtility playerMenuUtility;
+
+        if (playerMenuUtilityMap.containsKey(player)) {
+            return playerMenuUtilityMap.get(player);
+        } else {
+            playerMenuUtility = new PlayerMenuUtility(player);
+            playerMenuUtilityMap.put(player, playerMenuUtility);
+
+            return playerMenuUtility;
+        }
+    }
 
     public List<UUID> getStaff() {
         return staff;
@@ -98,5 +116,9 @@ public final class Main extends JavaPlugin {
 
     public boolean isVanish(Player player) {
         return getVanish().contains(player.getUniqueId());
+    }
+
+    public static Main getInstance() {
+        return instance;
     }
 }

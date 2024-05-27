@@ -1,4 +1,4 @@
-package fr.gamordstrimer.testplugin.handlers;
+package fr.gamordstrimer.testplugin.Listener;
 
 import fr.gamordstrimer.testplugin.CooldownManager;
 import fr.gamordstrimer.testplugin.Main;
@@ -6,7 +6,6 @@ import fr.gamordstrimer.testplugin.customitems.CustomItems;
 import fr.gamordstrimer.testplugin.heads.SkullTextureChanger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
@@ -16,7 +15,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -140,38 +138,6 @@ public class PlayerHandler implements Listener {
         }
     }
 
-
-    public static void mainGUI(Player player) {
-        mainGUI = Bukkit.createInventory(null, 9*5, Component.text("Custom Item de Sendaria").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true));
-
-        for (int i = 0; i < 9; i++) { // Top border
-            mainGUI.setItem(i, setupItemGUI.get("glasspane"));
-        }
-        for (int i = 9; i < 36; i += 9) { // Left border
-            mainGUI.setItem(i, setupItemGUI.get("glasspane"));
-        }
-        for (int i = 17; i < 45; i += 9) { // Right border
-            mainGUI.setItem(i, setupItemGUI.get("glasspane"));
-        }
-        for (int i = 36; i < 45; i++) { // Bottom border
-            if (i != 39 && i != 40 && i != 41) {
-                mainGUI.setItem(i, setupItemGUI.get("glasspane"));
-            }
-        }
-
-        mainGUI.setItem(39, setupItemGUI.get("buttonleft"));
-        mainGUI.setItem(41, setupItemGUI.get("buttonright"));
-
-        // Iterate over the entries of the map
-        for (Map.Entry<String, ItemStack> entry : CustomItems.getCustomItems().entrySet()) {
-            ItemStack item = entry.getValue();
-            String itemName = entry.getKey();
-            mainGUI.addItem(item);
-            itemGUI(itemName, item);
-        }
-        player.openInventory(mainGUI);
-    }
-
     public static void itemGUI(String itemName, ItemStack itemStack) {
         Component displayNameComponent = CustomItems.getItem(itemName).getItemMeta().displayName();
         String displayName = PlainTextComponentSerializer.plainText().serialize(Objects.requireNonNull(displayNameComponent));
@@ -284,7 +250,7 @@ public class PlayerHandler implements Listener {
         ItemStack buttonRight = new ItemStack(Material.SPRUCE_BUTTON);
         ItemMeta buttonRightMeta = buttonRight.getItemMeta();
         if (buttonRightMeta != null) {
-            buttonRightMeta.displayName(Component.text("Page Suivante").color(TextColor.fromHexString("#5b4500")).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false));
+            buttonRightMeta.displayName(Component.text("Page Suivante").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false));
             buttonRight.setItemMeta(buttonRightMeta);
         }
         setupItemGUI.put("buttonright", buttonRight);
@@ -293,7 +259,7 @@ public class PlayerHandler implements Listener {
         ItemStack buttonLeft = new ItemStack(Material.SPRUCE_BUTTON);
         ItemMeta buttonLeftMeta = buttonLeft.getItemMeta();
         if (buttonLeftMeta != null) {
-            buttonLeftMeta.displayName(Component.text("Page Précédente").color(TextColor.fromHexString("#5b4500")).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false));
+            buttonLeftMeta.displayName(Component.text("Page Précédente").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false));
             buttonLeft.setItemMeta(buttonLeftMeta);
         }
         setupItemGUI.put("buttonleft", buttonLeft);

@@ -1,9 +1,8 @@
-package fr.gamordstrimer.testplugin.handlers;
+package fr.gamordstrimer.testplugin.Listener;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import fr.gamordstrimer.testplugin.Main;
 import fr.gamordstrimer.testplugin.customitems.CustomItems;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
