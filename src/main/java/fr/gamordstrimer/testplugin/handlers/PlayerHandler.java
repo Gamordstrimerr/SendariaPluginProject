@@ -6,6 +6,7 @@ import fr.gamordstrimer.testplugin.customitems.CustomItems;
 import fr.gamordstrimer.testplugin.heads.SkullTextureChanger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
@@ -142,6 +143,25 @@ public class PlayerHandler implements Listener {
 
     public static void mainGUI(Player player) {
         mainGUI = Bukkit.createInventory(null, 9*5, Component.text("Custom Item de Sendaria").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true));
+
+        for (int i = 0; i < 9; i++) { // Top border
+            mainGUI.setItem(i, setupItemGUI.get("glasspane"));
+        }
+        for (int i = 9; i < 36; i += 9) { // Left border
+            mainGUI.setItem(i, setupItemGUI.get("glasspane"));
+        }
+        for (int i = 17; i < 45; i += 9) { // Right border
+            mainGUI.setItem(i, setupItemGUI.get("glasspane"));
+        }
+        for (int i = 36; i < 45; i++) { // Bottom border
+            if (i != 39 && i != 40 && i != 41) {
+                mainGUI.setItem(i, setupItemGUI.get("glasspane"));
+            }
+        }
+
+        mainGUI.setItem(39, setupItemGUI.get("buttonleft"));
+        mainGUI.setItem(41, setupItemGUI.get("buttonright"));
+
         // Iterate over the entries of the map
         for (Map.Entry<String, ItemStack> entry : CustomItems.getCustomItems().entrySet()) {
             ItemStack item = entry.getValue();
@@ -208,18 +228,12 @@ public class PlayerHandler implements Listener {
         itemGUI.setItem(44, setupItemGUI.get("headback"));
 
         // Fill empty slots with glass panes, except specific slots 10/11/12, 19/20/21, 28/29/30
-        ItemStack glassPane = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-        ItemMeta meta = glassPane.getItemMeta();
-        if (meta != null) {
-            meta.displayName(Component.text(" "));
-            glassPane.setItemMeta(meta);
-        }
 
         // Set of slots to exclude
         Set<Integer> excludedSlots = new HashSet<>(Arrays.asList(10, 11, 12, 19, 20, 21, 28, 29, 30));
         for (int i = 0; i < 45; i++) {
             if (itemGUI.getItem(i) == null && !excludedSlots.contains(i)) {
-                itemGUI.setItem(i, glassPane);
+                itemGUI.setItem(i, setupItemGUI.get("glasspane"));
             }
         }
 
@@ -235,22 +249,53 @@ public class PlayerHandler implements Listener {
         String base64Texture = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjZkOGVmZjRjNjczZTA2MzY5MDdlYTVjMGI1ZmY0ZjY0ZGMzNWM2YWFkOWI3OTdmMWRmNjYzMzUxYjRjMDgxNCJ9fX0=";
         SkullTextureChanger.setSkullTexture(headback, base64Texture);
         SkullMeta headbackmeta = (SkullMeta) headback.getItemMeta();
-        headbackmeta.displayName(Component.text("Retour").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false));
-        headback.setItemMeta(headbackmeta);
+        if (headbackmeta != null) {
+            headbackmeta.displayName(Component.text("Retour").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false));
+            headback.setItemMeta(headbackmeta);
+        }
         setupItemGUI.put("headback", headback);
 
         // crafting table
         ItemStack craftingtable = new ItemStack(Material.CRAFTING_TABLE);
         ItemMeta craftingtablemeta = craftingtable.getItemMeta();
-        craftingtablemeta.displayName(Component.text("Table de Craft").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false));
-        List<Component> lore = new ArrayList<>();
-        lore.add(Component.text("━━━━━━━━━━━━━━━━━━━━").color(NamedTextColor.GRAY));
-        lore.add(Component.text("Cette Item peut être").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.text("fabriqué dans une").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.text("Table de Craft").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.text("━━━━━━━━━━━━━━━━━━━━").color(NamedTextColor.GRAY));
-        craftingtablemeta.lore(lore);
-        craftingtable.setItemMeta(craftingtablemeta);
+        if (craftingtablemeta != null) {
+            craftingtablemeta.displayName(Component.text("Table de Craft").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false));
+            List<Component> lore = new ArrayList<>();
+            lore.add(Component.text("━━━━━━━━━━━━━━━━━━━━").color(NamedTextColor.GRAY));
+            lore.add(Component.text("Cette Item peut être").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text("fabriqué dans une").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text("Table de Craft").color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text("━━━━━━━━━━━━━━━━━━━━").color(NamedTextColor.GRAY));
+            craftingtablemeta.lore(lore);
+            craftingtable.setItemMeta(craftingtablemeta);
+        }
         setupItemGUI.put("craftingtable", craftingtable);
+
+        //GlassPane
+        ItemStack glassPane = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemMeta meta = glassPane.getItemMeta();
+        if (meta != null) {
+            meta.displayName(Component.text(" "));
+            glassPane.setItemMeta(meta);
+        }
+        setupItemGUI.put("glasspane", glassPane);
+
+        //Button Right
+        ItemStack buttonRight = new ItemStack(Material.SPRUCE_BUTTON);
+        ItemMeta buttonRightMeta = buttonRight.getItemMeta();
+        if (buttonRightMeta != null) {
+            buttonRightMeta.displayName(Component.text("Page Suivante").color(TextColor.fromHexString("#5b4500")).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false));
+            buttonRight.setItemMeta(buttonRightMeta);
+        }
+        setupItemGUI.put("buttonright", buttonRight);
+
+        //Button Left
+        ItemStack buttonLeft = new ItemStack(Material.SPRUCE_BUTTON);
+        ItemMeta buttonLeftMeta = buttonLeft.getItemMeta();
+        if (buttonLeftMeta != null) {
+            buttonLeftMeta.displayName(Component.text("Page Précédente").color(TextColor.fromHexString("#5b4500")).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false));
+            buttonLeft.setItemMeta(buttonLeftMeta);
+        }
+        setupItemGUI.put("buttonleft", buttonLeft);
     }
 }

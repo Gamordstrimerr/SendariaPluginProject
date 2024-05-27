@@ -41,6 +41,7 @@ public class CustomItems {
         HeadBand();
         InvisibleItemFrame();
         MagicLantern();
+        HealStone();
     }
 
     //Curse set of item
@@ -295,6 +296,24 @@ public class CustomItems {
         Bukkit.getServer().addRecipe(ml);
         customItems.put("magic_lantern", item);
         customItemRecipes.put("magic_lantern", ml);
+    }
+
+    private static void HealStone() {
+        ItemStack item = new ItemStack(Material.REDSTONE);
+        ItemMeta itemMeta = item.getItemMeta();
+        if (itemMeta != null) {
+            itemMeta.displayName(Component.text("Pierre de Soin").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false));
+            List<Component> lore = new ArrayList<>();
+            lore.add(Component.text("Cette pierre vous soigne").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text("entièrement et instantanément").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text(" "));
+            lore.add(Component.text("⚠ Usage Unique").color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text(" "));
+            lore.add(Component.text("Sendaria").color(TextColor.fromHexString("#FF5D00")).decorate(TextDecoration.ITALIC));
+            itemMeta.lore(lore);
+            item.setItemMeta(itemMeta);
+        }
+        customItems.put("healstone", item);
     }
 
     public static ItemStack getItem(String itemName) {
