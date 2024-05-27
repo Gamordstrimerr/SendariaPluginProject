@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 public class PlayerMenuUtility {
 
     private Player owner;
+    private Menu currentMenu;
 
     public PlayerMenuUtility(Player owner) {
         this.owner = owner;
@@ -18,5 +19,12 @@ public class PlayerMenuUtility {
         this.owner = owner;
     }
 
+    public Menu getCurrentMenu() {
+        return currentMenu;
+    }
+
+    public void setCurrentMenu(Menu currentMenu) {
+        this.currentMenu = currentMenu;
+    }
 
 }

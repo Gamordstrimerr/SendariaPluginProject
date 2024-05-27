@@ -3,7 +3,6 @@ package fr.gamordstrimer.testplugin.menusystem.menu;
 import fr.gamordstrimer.testplugin.Main;
 import fr.gamordstrimer.testplugin.menusystem.Menu;
 import fr.gamordstrimer.testplugin.menusystem.PlayerMenuUtility;
-import fr.gamordstrimer.testplugin.staff.DefineTarget;
 import fr.gamordstrimer.testplugin.staff.StaffMode;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -22,12 +21,14 @@ import java.util.*;
 
 public class SelPlayerGUI extends Menu {
 
+    private static final List<SelPlayerGUI> instances = new ArrayList<>();
     private final Player opener;
-    private DefineTarget target;
+    private static Player target;
 
     public SelPlayerGUI(PlayerMenuUtility playerMenuUtility) {
         super(playerMenuUtility);
         this.opener = playerMenuUtility.getOwner();
+        instances.add(this);
     }
 
     @Override
@@ -51,8 +52,7 @@ public class SelPlayerGUI extends Menu {
             if (onlinePlayers.size() > 1) {
                 onlinePlayers.remove(player);
                 Player targetPlayer = onlinePlayers.get(new Random().nextInt(onlinePlayers.size()));
-                DefineTarget defineTarget  = new DefineTarget(targetPlayer);
-                Player target = defineTarget.getTarget();
+                setTarget(targetPlayer);
                 player.teleport(target);
                 player.sendMessage(Component.text(prefixserver)
                         .append(Component.text("Tu as été téléporter à ")
@@ -66,8 +66,7 @@ public class SelPlayerGUI extends Menu {
                 String playerName = PlainTextComponentSerializer.plainText().serialize(Objects.requireNonNull(item.getItemMeta().displayName()));
                 Player selplayer = Bukkit.getPlayerExact(playerName);
                 if (selplayer != null && player != selplayer) {
-                    DefineTarget defineTarget = new DefineTarget(selplayer);
-                    Player target = defineTarget.getTarget();
+                    setTarget(selplayer);
                     player.teleport(target);
                     player.sendMessage(Component.text(prefixserver)
                             .append(Component.text("Tu as été téléporter à ")
@@ -83,6 +82,8 @@ public class SelPlayerGUI extends Menu {
 
     @Override
     public void setMenuItems() {
+
+        inventory.clear();
 
         Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
         Set<UUID> addedPlayers = new HashSet<>(); // Track added players
@@ -121,7 +122,23 @@ public class SelPlayerGUI extends Menu {
 
     }
 
-    public Player getTargetPlayer() {
-        return target.getTarget();
+    public static void updateMenu() {
+        for (SelPlayerGUI instance : instances) {
+            instance.setMenuItems();
+        }
     }
+
+
+    public static Player getTarget() {
+        return target;
+    }
+
+    public void setTarget(Player target) {
+        this.target = target;
+    }
+
+    public static void removeInstance(SelPlayerGUI instance) {
+        instances.remove(instance);
+    }
+
 }
