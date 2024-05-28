@@ -102,7 +102,7 @@ public class StaffHandler implements Listener {
                             if(isRightClick) {
                                 new SelPlayerGUI(Main.getPlayerMenuUtility(player)).open();
                             } else if (isLeftClick) {
-                                Player target = SelPlayerGUI.getTarget();
+                                Player target = SelPlayerGUI.getTarget(player);
                                 if(target != null) {
                                     player.teleport(target);
                                     player.sendMessage(Component.text(prefixServer)
@@ -151,7 +151,7 @@ public class StaffHandler implements Listener {
                             break;
                         case "ice":
                             if(isRightClick) {
-                                Player target = SelPlayerGUI.getTarget();
+                                Player target = SelPlayerGUI.getTarget(player);
                                 if (target != null) {
                                     plugin.getFreezedplayer().put(target.getUniqueId(), target.getLocation());
                                     player.sendMessage(Component.text(prefixServer).append(Component.text(target.getName()).color(NamedTextColor.DARK_RED))
@@ -168,7 +168,7 @@ public class StaffHandler implements Listener {
                             break;
                         case "unice":
                             if(isRightClick) {
-                                Player target = SelPlayerGUI.getTarget();
+                                Player target = SelPlayerGUI.getTarget(player);
                                 if(target != null) {
                                     plugin.getFreezedplayer().remove(target.getUniqueId());
                                     player.sendMessage(Component.text(prefixServer).append(Component.text(target.getName()).color(NamedTextColor.DARK_RED))
@@ -185,7 +185,7 @@ public class StaffHandler implements Listener {
                             break;
                         case "chest":
                             if(isRightClick) {
-                                Player target = SelPlayerGUI.getTarget();
+                                Player target = SelPlayerGUI.getTarget(player);
                                 if (target != null) {
                                     new InvseeGUI(Main.getPlayerMenuUtility(player)).open();
                                     InvseeGUI.startScheduler();

@@ -23,7 +23,7 @@ public class SelPlayerGUI extends Menu {
 
     private static final List<SelPlayerGUI> instances = new ArrayList<>();
     private final Player opener;
-    private static Player target;
+    private static final Map<Player, Player> playerTargets = new HashMap<>();
 
     public SelPlayerGUI(PlayerMenuUtility playerMenuUtility) {
         super(playerMenuUtility);
@@ -52,7 +52,8 @@ public class SelPlayerGUI extends Menu {
             if (onlinePlayers.size() > 1) {
                 onlinePlayers.remove(player);
                 Player targetPlayer = onlinePlayers.get(new Random().nextInt(onlinePlayers.size()));
-                setTarget(targetPlayer);
+                setTarget(opener, targetPlayer);
+                Player target = getTarget(opener);
                 player.teleport(target);
                 player.sendMessage(Component.text(prefixserver)
                         .append(Component.text("Tu as été téléporter à ")
@@ -66,7 +67,8 @@ public class SelPlayerGUI extends Menu {
                 String playerName = PlainTextComponentSerializer.plainText().serialize(Objects.requireNonNull(item.getItemMeta().displayName()));
                 Player selplayer = Bukkit.getPlayerExact(playerName);
                 if (selplayer != null && player != selplayer) {
-                    setTarget(selplayer);
+                    setTarget(opener, selplayer);
+                    Player target = getTarget(opener);
                     player.teleport(target);
                     player.sendMessage(Component.text(prefixserver)
                             .append(Component.text("Tu as été téléporter à ")
@@ -129,12 +131,12 @@ public class SelPlayerGUI extends Menu {
     }
 
 
-    public static Player getTarget() {
-        return target;
+    public static Player getTarget(Player player) {
+        return playerTargets.get(player);
     }
 
-    public void setTarget(Player target) {
-        this.target = target;
+    public static void setTarget(Player opener, Player target) {
+        playerTargets.put(opener, target);
     }
 
     public static void removeInstance(SelPlayerGUI instance) {

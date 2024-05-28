@@ -1,5 +1,6 @@
 package fr.gamordstrimer.testplugin.menusystem.menu;
 
+import fr.gamordstrimer.testplugin.Main;
 import fr.gamordstrimer.testplugin.customitems.CustomItems;
 import fr.gamordstrimer.testplugin.menusystem.Menu;
 import fr.gamordstrimer.testplugin.menusystem.PlayerMenuUtility;
@@ -7,8 +8,11 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.md_5.bungee.api.chat.hover.content.Item;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -16,6 +20,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 public class MainGUI extends Menu {
+
+    private static String itemName;
+    private static ItemStack itemStack;
 
     public MainGUI(PlayerMenuUtility playerMenuUtility) {
         super(playerMenuUtility);
@@ -33,6 +40,16 @@ public class MainGUI extends Menu {
 
     @Override
     public void handleMenu(InventoryClickEvent e) {
+        ItemStack clickedItem = e.getCurrentItem();
+        Player player = (Player) e.getWhoClicked();
+        for (Map.Entry<String, ItemStack> entry : CustomItems.getCustomItems().entrySet()) {
+            if (clickedItem.isSimilar(entry.getValue())) {
+                itemName = entry.getKey();
+                itemStack = entry.getValue();
+
+                new ItemGUI(Main.getPlayerMenuUtility(player)).open();
+            }
+        }
 
     }
 
@@ -89,5 +106,21 @@ public class MainGUI extends Menu {
             inventory.addItem(item);
         }
 
+    }
+
+    public static void setItemName(String itemName) {
+        MainGUI.itemName = itemName;
+    }
+
+    public static String getItemName() {
+        return itemName;
+    }
+
+    public static void setItemStack(ItemStack itemStack) {
+        MainGUI.itemStack = itemStack;
+    }
+
+    public static ItemStack getItemStack() {
+        return itemStack;
     }
 }

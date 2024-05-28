@@ -26,15 +26,17 @@ public class InvseeGUI extends Menu {
 
     private static BukkitTask task;
     private static InvseeGUI instance;
+    private final Player opener;
 
     public InvseeGUI(PlayerMenuUtility playerMenuUtility) {
         super(playerMenuUtility);
+        this.opener = playerMenuUtility.getOwner();
         instance = this;
     }
 
     @Override
     public @NotNull TextComponent getMenuName() {
-        Player target = SelPlayerGUI.getTarget();
+        Player target = SelPlayerGUI.getTarget(opener);
         return Component.text("Inventaire de ").append(Component.text(target.getName()).color(NamedTextColor.GOLD));
     }
 
@@ -50,7 +52,7 @@ public class InvseeGUI extends Menu {
 
     @Override
     public void setMenuItems() {
-        Player target = SelPlayerGUI.getTarget();
+        Player target = SelPlayerGUI.getTarget(opener);
 
         inventory.clear();
 
