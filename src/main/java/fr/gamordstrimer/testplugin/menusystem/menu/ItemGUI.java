@@ -36,7 +36,7 @@ public class ItemGUI extends Menu {
 
     @Override
     public @NotNull TextComponent getMenuName() {
-        String itemName = MainGUI.getItemName();
+        String itemName = PaginatedMainGUI.getItemName();
         Component displayNameComponent = CustomItems.getItem(itemName).getItemMeta().displayName();
         String displayName = PlainTextComponentSerializer.plainText().serialize(Objects.requireNonNull(displayNameComponent));
         return Component.text(displayName).color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true);
@@ -53,15 +53,15 @@ public class ItemGUI extends Menu {
         Player player = (Player) e.getWhoClicked();
         if (clickedItem != null && clickedItem.isSimilar(headback)) {
             // Go back to the main GUI
-            new MainGUI(Main.getPlayerMenuUtility(player)).open();
+            new PaginatedMainGUI(Main.getPlayerMenuUtility(player)).open();
         }
     }
 
     @Override
     public void setMenuItems() {
 
-        String itemName = MainGUI.getItemName();
-        ItemStack itemStack = MainGUI.getItemStack();
+        String itemName = PaginatedMainGUI.getItemName();
+        ItemStack itemStack = PaginatedMainGUI.getItemStack();
 
         Recipe recipe = CustomItems.getRecipe(itemName);
         if (recipe != null) {

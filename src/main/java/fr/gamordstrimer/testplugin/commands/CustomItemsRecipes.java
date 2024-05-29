@@ -1,8 +1,7 @@
 package fr.gamordstrimer.testplugin.commands;
 
-import fr.gamordstrimer.testplugin.Listener.PlayerHandler;
 import fr.gamordstrimer.testplugin.Main;
-import fr.gamordstrimer.testplugin.menusystem.menu.MainGUI;
+import fr.gamordstrimer.testplugin.menusystem.menu.PaginatedMainGUI;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -19,7 +18,7 @@ public class CustomItemsRecipes implements CommandExecutor {
         }
 
         if (player.hasPermission("sendaria.cir") || player.hasPermission("*")) {
-            new MainGUI(Main.getPlayerMenuUtility(player)).open();
+            new PaginatedMainGUI(Main.getPlayerMenuUtility(player)).open();
         }
         return true;
     }
