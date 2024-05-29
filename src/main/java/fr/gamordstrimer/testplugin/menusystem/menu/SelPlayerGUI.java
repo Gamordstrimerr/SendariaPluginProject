@@ -2,6 +2,7 @@ package fr.gamordstrimer.testplugin.menusystem.menu;
 
 import fr.gamordstrimer.testplugin.Main;
 import fr.gamordstrimer.testplugin.menusystem.Menu;
+import fr.gamordstrimer.testplugin.menusystem.PaginatedMenu;
 import fr.gamordstrimer.testplugin.menusystem.PlayerMenuUtility;
 import fr.gamordstrimer.testplugin.staff.StaffMode;
 import net.kyori.adventure.text.Component;
@@ -19,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class SelPlayerGUI extends Menu {
+public class SelPlayerGUI extends PaginatedMenu {
 
     private static final List<SelPlayerGUI> instances = new ArrayList<>();
     private final Player opener;
@@ -38,7 +39,7 @@ public class SelPlayerGUI extends Menu {
 
     @Override
     public int getSlots() {
-        return 45;
+        return 54;
     }
 
     @Override
@@ -46,8 +47,7 @@ public class SelPlayerGUI extends Menu {
         String prefixserver = Objects.requireNonNull(Main.getInstance().getConfig().getString("messages.prefixserver")).replace("&", "§");
         Player player = (Player) e.getWhoClicked();
         ItemStack item = e.getCurrentItem();
-        int lastSlot = inventory.getSize() - 1;
-        if(e.getSlot() == lastSlot) {
+        if(item.isSimilar(super.headRandom)) {
             List<Player> onlinePlayers = new ArrayList<>(Bukkit.getOnlinePlayers());
             if (onlinePlayers.size() > 1) {
                 onlinePlayers.remove(player);
@@ -87,6 +87,8 @@ public class SelPlayerGUI extends Menu {
 
         inventory.clear();
 
+        addMenuBorder();
+
         Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
         Set<UUID> addedPlayers = new HashSet<>(); // Track added players
 
@@ -118,9 +120,7 @@ public class SelPlayerGUI extends Menu {
             addedPlayers.add(onlinePlayer.getUniqueId());
         }
 
-        int invsize = inventory.getSize();
-        int lastslot = invsize - 1;
-        inventory.setItem(lastslot, StaffMode.getInstance().getStaffItems().get("dicerandom"));
+        inventory.setItem(43, super.headRandom);
 
     }
 

@@ -48,7 +48,7 @@ public class StaffMode implements CommandExecutor {
                 plugin.getStaff().remove(player.getUniqueId());
                 player.getInventory().clear();
                 player.sendMessage(Component.text(prefixserver)
-                        .append(Component.text("Vous n'êtes plus en mode modération.").color(TextColor.fromHexString("#9e0000"))));
+                        .append(Component.text("Vous n'êtes plus en mode modération.").color(NamedTextColor.DARK_RED)));
                 pm.giveInventory();
                 pm.destroy();
                 player.sendActionBar(Component.empty());
@@ -58,7 +58,7 @@ public class StaffMode implements CommandExecutor {
             pm.init();
             plugin.getStaff().add(player.getUniqueId());
             player.sendMessage(Component.text(prefixserver)
-                    .append(Component.text("Vous êtes en mode modération").color(TextColor.fromHexString("#9e0000"))));
+                    .append(Component.text("Vous êtes en mode modération").color(NamedTextColor.GREEN)));
             pm.saveInventory();
 
             new BukkitRunnable() {
@@ -235,22 +235,6 @@ public class StaffMode implements CommandExecutor {
             chest.setItemMeta(chestMeta);
         }
         staffItems.put("chest", chest);
-
-        ItemStack diceRandom = new ItemStack(Material.PLAYER_HEAD);
-        String base64Texture2 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmUyMmMyOThlN2M2MzM2YWYxNzkwOWFjMWYxZWU2ODM0YjU4YjFhM2NjOTlhYmEyNTVjYTdlYWViNDc2MTczIn19fQ==";
-        SkullTextureChanger.setSkullTexture(diceRandom, base64Texture2);
-        SkullMeta diceRandomMeta = (SkullMeta) diceRandom.getItemMeta();
-        if (diceRandomMeta != null) {
-            diceRandomMeta.displayName(Component.text("Téléportation Aléatoire").color(NamedTextColor.AQUA).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false));
-            List<Component> lore = new ArrayList<>();
-            lore.add(Component.text(" "));
-            lore.add(Component.text("\uD83C\uDFB2 Clique pour te Téléporter").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("   à un joueur aléatoire").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text(" "));
-            diceRandomMeta.lore(lore);
-            diceRandom.setItemMeta(diceRandomMeta);
-        }
-        staffItems.put("dicerandom", diceRandom);
     }
 
     public static StaffMode getInstance() {
