@@ -5,7 +5,10 @@ import fr.gamordstrimer.testplugin.menusystem.menu.InvseeGUI;
 import fr.gamordstrimer.testplugin.menusystem.menu.SelPlayerGUI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -77,6 +80,53 @@ public class StaffHandler implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
+        Player quittingPlayer = event.getPlayer();
+        List<Player> toRemove = new ArrayList<>();
+
+        // Iterate over all player-target mappings to find if quitting player is a target
+        SelPlayerGUI.getTargets().forEach((opener, target) -> {
+            if (target.equals(quittingPlayer)) {
+
+                UUID targetUUID = target.getUniqueId();
+                String targetName = target.getName();
+                Location targetLoc = target.getLocation();
+                int locX = targetLoc.getBlockX();
+                int locY = targetLoc.getBlockY();
+                int locZ = targetLoc.getBlockZ();
+
+                //Using the MiniMessage API to make Gradient Color Message
+                var mm = MiniMessage.miniMessage();
+                Component border = mm.deserialize("<gradient:#ff5555:#6b0000><st>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</st></gradient>");
+                Component coordonate_message = mm.deserialize("<gold>Coordonnées où le joueur c'est déconnecté :</gold> <click:run_command:'/tp " + locX + " " + locY + " " + locZ + "'><yellow><hover:show_text:'<green>Clique ici pour te Téléporter</green>'>x: " + locX + " y: " + locY + " z: " + locZ + "</hover></yellow></click>");
+
+                List<Component> messageLines = new ArrayList<>();
+                messageLines.add(border);
+                messageLines.add(Component.text("➤ Le joueur : ").color(NamedTextColor.RED)
+                        .append(Component.text(targetName).color(NamedTextColor.DARK_RED)
+                        .append(Component.text(" viens de ce déconnecter.").color(NamedTextColor.RED))));
+                messageLines.add(Component.text(" "));
+                messageLines.add(Component.text("UUID du joueur :").color(NamedTextColor.GOLD)
+                        .append(Component.text(" " + targetUUID).color(NamedTextColor.YELLOW)));
+                messageLines.add(Component.text("Pseudo du player : " ).color(NamedTextColor.GOLD)
+                        .append(Component.text(targetName).color(NamedTextColor.YELLOW)));
+                messageLines.add(coordonate_message);
+                messageLines.add(border);
+
+                Component finalMessage = Component.empty();
+                for (Component line : messageLines) {
+                    finalMessage = finalMessage.append(line).append(Component.newline());
+                }
+
+                // Notify the opener that their target has disconnected
+                opener.sendMessage(finalMessage);
+
+                toRemove.add(opener); // Collect keys to remove
+            }
+        });
+
+        // Remove the collected keys outside the iteration
+        toRemove.forEach(SelPlayerGUI::removeTarget);
+
         // Update the GUI when a player quits with a slight delay
         Bukkit.getScheduler().runTaskLater(plugin, SelPlayerGUI::updateMenu, 1L);
     }

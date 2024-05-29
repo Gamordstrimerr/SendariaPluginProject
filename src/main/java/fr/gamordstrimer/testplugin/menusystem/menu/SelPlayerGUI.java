@@ -135,12 +135,20 @@ public class SelPlayerGUI extends Menu {
         return playerTargets.get(player);
     }
 
+    public static Map<Player, Player> getTargets() {
+        return playerTargets;
+    }
+
     public static void setTarget(Player opener, Player target) {
         playerTargets.put(opener, target);
     }
 
     public static void removeInstance(SelPlayerGUI instance) {
         instances.remove(instance);
+    }
+
+    public static void removeTarget(Player opener) {
+        playerTargets.remove(opener);
     }
 
 }

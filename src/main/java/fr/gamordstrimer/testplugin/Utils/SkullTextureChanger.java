@@ -1,4 +1,4 @@
-package fr.gamordstrimer.testplugin.heads;
+package fr.gamordstrimer.testplugin.Utils;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;

@@ -17,7 +17,6 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.scheduler.BukkitTask;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -37,6 +36,9 @@ public class InvseeGUI extends Menu {
     @Override
     public @NotNull TextComponent getMenuName() {
         Player target = SelPlayerGUI.getTarget(opener);
+        if (target == null) {
+            return Component.text("Target not found").color(NamedTextColor.RED);
+        }
         return Component.text("Inventaire de ").append(Component.text(target.getName()).color(NamedTextColor.GOLD));
     }
 
@@ -47,18 +49,23 @@ public class InvseeGUI extends Menu {
 
     @Override
     public void handleMenu(InventoryClickEvent e) {
-
+        // Handle inventory click events if needed
     }
 
     @Override
     public void setMenuItems() {
         Player target = SelPlayerGUI.getTarget(opener);
 
+        if (target == null) {
+            opener.closeInventory();
+            return;
+        }
+
         inventory.clear();
 
-        //Create Custom ItemStack
+        // Create Custom ItemStack
         UUID playerUUID = UUID.fromString(String.valueOf(target.getUniqueId()));
-        ItemStack skull  = new ItemStack(Material.PLAYER_HEAD);
+        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
         double health = target.getHealth();
         String formattedHealth = String.format("%.1f", Math.max(health, 0.0));
@@ -93,12 +100,13 @@ public class InvseeGUI extends Menu {
         inventory.setItem(42, background);
         inventory.setItem(43, background);
         inventory.setItem(44, skull);
-
     }
 
     // Method to start the BukkitScheduler
     public static void startScheduler() {
-        if(instance != null) {
+        Player target = SelPlayerGUI.getTarget(InvseeGUI.instance.opener);
+
+        if (instance != null && target != null) {
             task = Bukkit.getScheduler().runTaskTimer(Main.getInstance(), instance::setMenuItems, 0, 20L);
         }
     }

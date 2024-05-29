@@ -2,7 +2,7 @@ package fr.gamordstrimer.testplugin.menusystem.menu;
 
 import fr.gamordstrimer.testplugin.Main;
 import fr.gamordstrimer.testplugin.customitems.CustomItems;
-import fr.gamordstrimer.testplugin.heads.SkullTextureChanger;
+import fr.gamordstrimer.testplugin.Utils.SkullTextureChanger;
 import fr.gamordstrimer.testplugin.menusystem.Menu;
 import fr.gamordstrimer.testplugin.menusystem.PlayerMenuUtility;
 import net.kyori.adventure.text.Component;

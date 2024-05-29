@@ -1,6 +1,6 @@
 package fr.gamordstrimer.testplugin.staff;
 
-import fr.gamordstrimer.testplugin.CooldownManager;
+import fr.gamordstrimer.testplugin.Utils.CooldownManager;
 import fr.gamordstrimer.testplugin.Main;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

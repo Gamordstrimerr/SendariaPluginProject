@@ -1,4 +1,4 @@
-package fr.gamordstrimer.testplugin;
+package fr.gamordstrimer.testplugin.Utils;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;

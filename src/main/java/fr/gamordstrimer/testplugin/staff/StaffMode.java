@@ -1,7 +1,7 @@
 package fr.gamordstrimer.testplugin.staff;
 
 import fr.gamordstrimer.testplugin.Main;
-import fr.gamordstrimer.testplugin.heads.SkullTextureChanger;
+import fr.gamordstrimer.testplugin.Utils.SkullTextureChanger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -11,7 +11,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;

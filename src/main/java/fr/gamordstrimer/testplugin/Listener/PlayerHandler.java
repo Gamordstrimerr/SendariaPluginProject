@@ -1,9 +1,9 @@
 package fr.gamordstrimer.testplugin.Listener;
 
-import fr.gamordstrimer.testplugin.CooldownManager;
+import fr.gamordstrimer.testplugin.Utils.CooldownManager;
 import fr.gamordstrimer.testplugin.Main;
 import fr.gamordstrimer.testplugin.customitems.CustomItems;
-import fr.gamordstrimer.testplugin.heads.SkullTextureChanger;
+import fr.gamordstrimer.testplugin.Utils.SkullTextureChanger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
