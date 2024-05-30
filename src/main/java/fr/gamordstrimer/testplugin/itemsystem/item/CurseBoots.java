@@ -5,6 +5,7 @@ import fr.gamordstrimer.testplugin.itemsystem.Item;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -31,9 +32,10 @@ public class CurseBoots extends Item {
     public ItemMeta setItemMeta() {
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta != null) {
-            itemMeta.displayName(Component.text("ᚿᛂÞᛂᚱᛁᛐᛂ ᛒᚮᚮᛐᛍ").color(TextColor.fromHexString("#D00000")).decoration(TextDecoration.ITALIC, false));
+            var mm = MiniMessage.miniMessage();
+            Component displayName = mm.deserialize("<gradient:#660000:#cc0000>Bottes</gradient><gradient:#cc0000:#660000> Maudites</gradient>");
+            itemMeta.displayName(displayName.decoration(TextDecoration.ITALIC, false));
             List<Component> lore = new ArrayList<>();
-            lore.add(Component.text("≈ Bottes Maudites").color(TextColor.fromHexString("#FF5D00")).decoration(TextDecoration.ITALIC, false));
             lore.add(Component.text(" "));
             lore.add(Component.text("Sendaria").color(TextColor.fromHexString("#FF5D00")).decorate(TextDecoration.ITALIC));
             itemMeta.lore(lore);
