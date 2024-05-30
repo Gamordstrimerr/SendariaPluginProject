@@ -81,6 +81,15 @@ public class StaffHandler implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player quittingPlayer = event.getPlayer();
+
+        if (plugin.isInStaff(quittingPlayer)) {
+            PlayerManager playerManager = PlayerManager.getFromPlayer(quittingPlayer);
+            plugin.getStaff().remove(quittingPlayer.getUniqueId());
+            quittingPlayer.getInventory().clear();
+            playerManager.giveInventory();
+            playerManager.destroy();
+        }
+
         List<Player> toRemove = new ArrayList<>();
 
         // Iterate over all player-target mappings to find if quitting player is a target
