@@ -1,7 +1,7 @@
 package fr.gamordstrimer.testplugin.commands;
 
 import fr.gamordstrimer.testplugin.Main;
-import fr.gamordstrimer.testplugin.customitems.CustomItems;
+import fr.gamordstrimer.testplugin.itemsystem.ItemManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -39,7 +39,7 @@ public class CustomItemsGive implements CommandExecutor, TabCompleter {
             }
 
             if (args.length == 1) {
-                List<String> itemNames = new ArrayList<>(CustomItems.getCustomItems().keySet());
+                List<String> itemNames = new ArrayList<>(ItemManager.getCustomItems().keySet());
                 itemNames.sort(String.CASE_INSENSITIVE_ORDER);
                 StringBuilder itemList = new StringBuilder();
                 itemList.append(translateAlternateColorCodes('&', prefixserver + "Liste des Items disponibles :\n"));
@@ -56,7 +56,7 @@ public class CustomItemsGive implements CommandExecutor, TabCompleter {
             }
 
             String itemName = args[0];
-            ItemStack customItem = CustomItems.getItem(itemName);
+            ItemStack customItem = ItemManager.getCustomItem(itemName);
 
             if (customItem == null) {
                 player.sendMessage(translateAlternateColorCodes('&', prefixserver + "Item '" + itemName + "' non trouvé."));
@@ -84,7 +84,7 @@ public class CustomItemsGive implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
-            List<String> itemNames = new ArrayList<>(CustomItems.getCustomItems().keySet());
+            List<String> itemNames = new ArrayList<>(ItemManager.getCustomItems().keySet());
             itemNames.sort(String.CASE_INSENSITIVE_ORDER);
             return itemNames;
         }

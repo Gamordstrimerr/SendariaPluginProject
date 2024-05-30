@@ -1,8 +1,8 @@
 package fr.gamordstrimer.testplugin.menusystem.menu;
 
 import fr.gamordstrimer.testplugin.Main;
-import fr.gamordstrimer.testplugin.customitems.CustomItems;
 import fr.gamordstrimer.testplugin.Utils.SkullTextureChanger;
+import fr.gamordstrimer.testplugin.itemsystem.ItemManager;
 import fr.gamordstrimer.testplugin.menusystem.Menu;
 import fr.gamordstrimer.testplugin.menusystem.PlayerMenuUtility;
 import net.kyori.adventure.text.Component;
@@ -10,6 +10,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -37,7 +38,7 @@ public class ItemGUI extends Menu {
     @Override
     public @NotNull TextComponent getMenuName() {
         String itemName = PaginatedMainGUI.getItemName();
-        Component displayNameComponent = CustomItems.getItem(itemName).getItemMeta().displayName();
+        Component displayNameComponent = ItemManager.getCustomItem(itemName).getItemMeta().displayName();
         String displayName = PlainTextComponentSerializer.plainText().serialize(Objects.requireNonNull(displayNameComponent));
         return Component.text(displayName).color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true);
     }
@@ -63,7 +64,9 @@ public class ItemGUI extends Menu {
         String itemName = PaginatedMainGUI.getItemName();
         ItemStack itemStack = PaginatedMainGUI.getItemStack();
 
-        Recipe recipe = CustomItems.getRecipe(itemName);
+        Bukkit.getLogger().info(itemName);
+
+        Recipe recipe = ItemManager.getRecipe(itemName);
         if (recipe != null) {
             if (recipe instanceof ShapedRecipe shapedRecipe) {
                 Map<Character, ItemStack> ingredientMap = shapedRecipe.getIngredientMap();

@@ -4,7 +4,7 @@ import fr.gamordstrimer.testplugin.Listener.*;
 import fr.gamordstrimer.testplugin.Utils.CooldownManager;
 import fr.gamordstrimer.testplugin.commands.CustomItemsRecipes;
 import fr.gamordstrimer.testplugin.commands.CustomItemsGive;
-import fr.gamordstrimer.testplugin.customitems.CustomItems;
+import fr.gamordstrimer.testplugin.itemsystem.ItemManager;
 import fr.gamordstrimer.testplugin.menusystem.PlayerMenuUtility;
 import fr.gamordstrimer.testplugin.staff.PlayerManager;
 import fr.gamordstrimer.testplugin.staff.Staff;
@@ -47,7 +47,8 @@ public final class Main extends JavaPlugin {
         freezedplayer = new HashMap<>();
 
         // Registering elements
-        CustomItems.init(this);
+        //CustomItems.init(this);
+        new ItemManager().initializeCustomItems();
         PlayerManager.setPlugin(this);
 
         //register Commands

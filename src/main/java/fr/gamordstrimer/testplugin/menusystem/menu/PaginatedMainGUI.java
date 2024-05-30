@@ -1,19 +1,16 @@
 package fr.gamordstrimer.testplugin.menusystem.menu;
 
 import fr.gamordstrimer.testplugin.Main;
-import fr.gamordstrimer.testplugin.customitems.CustomItems;
+import fr.gamordstrimer.testplugin.itemsystem.ItemManager;
 import fr.gamordstrimer.testplugin.menusystem.PaginatedMenu;
 import fr.gamordstrimer.testplugin.menusystem.PlayerMenuUtility;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.checkerframework.checker.units.qual.A;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -40,13 +37,13 @@ public class PaginatedMainGUI extends PaginatedMenu {
     @Override
     public void handleMenu(InventoryClickEvent e) {
 
-        Map<String, ItemStack> customItems = CustomItems.getCustomItems();
+        Map<String, ItemStack> customItems = ItemManager.getCustomItems();
         ArrayList<ItemStack> items = new ArrayList<>(customItems.values());
 
         ItemStack clickedItem = e.getCurrentItem();
         Player player = (Player) e.getWhoClicked();
-        if (CustomItems.getCustomItems().containsValue(clickedItem)) {
-            for (Map.Entry<String, ItemStack> entry : CustomItems.getCustomItems().entrySet()) {
+        if (ItemManager.getCustomItems().containsValue(clickedItem)) {
+            for (Map.Entry<String, ItemStack> entry : ItemManager.getCustomItems().entrySet()) {
                 if (entry.getValue().equals(clickedItem)) {
                     itemName = entry.getKey();
                     itemStack = entry.getValue();
@@ -79,7 +76,7 @@ public class PaginatedMainGUI extends PaginatedMenu {
 
         addMenuBorder();
 
-        Map<String, ItemStack> customItems = CustomItems.getCustomItems();
+        Map<String, ItemStack> customItems = ItemManager.getCustomItems();
         ArrayList<ItemStack> items = new ArrayList<>(customItems.values());
 
         if (items != null && !items.isEmpty()) {

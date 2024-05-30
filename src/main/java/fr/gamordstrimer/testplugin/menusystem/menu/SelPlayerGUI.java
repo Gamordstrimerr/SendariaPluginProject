@@ -47,6 +47,8 @@ public class SelPlayerGUI extends PaginatedMenu {
         String prefixserver = Objects.requireNonNull(Main.getInstance().getConfig().getString("messages.prefixserver")).replace("&", "§");
         Player player = (Player) e.getWhoClicked();
         ItemStack item = e.getCurrentItem();
+        ArrayList<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
+
         if(item.isSimilar(super.headRandom)) {
             List<Player> onlinePlayers = new ArrayList<>(Bukkit.getOnlinePlayers());
             if (onlinePlayers.size() > 1) {
@@ -61,6 +63,22 @@ public class SelPlayerGUI extends PaginatedMenu {
                         .append(Component.text(".").color(NamedTextColor.WHITE)))));
             } else {
                 player.sendMessage(Component.text(prefixserver).append(Component.text("Il n'y a pas assez de joueur en ligne pour utiliser cette fonction !").color(NamedTextColor.RED)));
+            }
+        } else if (item.isSimilar(super.close)) {
+            player.closeInventory();
+        } else if (item.isSimilar(super.left)) {
+            if (page == 0) {
+                player.sendMessage(Component.text("Tu es déjà à la première page").color(NamedTextColor.RED));
+            } else {
+                page = page - 1;
+                super.open();
+            }
+        } else if (item.isSimilar(super.right)) {
+            if (!((index + 1) >= players.size())) {
+                page = page + 1;
+                super.open();
+            } else {
+                player.sendMessage(Component.text("Tu es à la dernière page").color(NamedTextColor.RED));
             }
         } else {
             if (item != null && item.getType() == Material.PLAYER_HEAD) {
@@ -89,38 +107,42 @@ public class SelPlayerGUI extends PaginatedMenu {
 
         addMenuBorder();
 
-        Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
-        Set<UUID> addedPlayers = new HashSet<>(); // Track added players
+        inventory.setItem(53, super.headRandom);
 
-        for (Player onlinePlayer : onlinePlayers) {
-            if (addedPlayers.contains(onlinePlayer.getUniqueId())) {
-                continue;
+        ArrayList<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
+
+        if(players != null && !players.isEmpty()) {
+            for (int i = 0; i < super.maxItemsPerPage; i++) {
+                index = super.maxItemsPerPage * page + i;
+                if (index >= players.size()) break;
+                if (players.get(index) != null) {
+                    ///////////////////////////
+
+                    ItemStack headItem = new ItemStack(Material.PLAYER_HEAD);
+                    SkullMeta skullMeta = (SkullMeta) headItem.getItemMeta();
+                    assert skullMeta != null;
+                    skullMeta.setPlayerProfile(players.get(i).getPlayerProfile());
+                    skullMeta.displayName(Component.text(players.get(i).getName()).color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
+                    List<Component> lore = new ArrayList<>();
+                    if(opener != null && players.get(i).getUniqueId().equals(opener.getUniqueId())) {
+                        lore.add(Component.text(" "));
+                        lore.add(Component.text("⚠ Tu ne peux pas te").color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
+                        lore.add(Component.text("   téléporter à toi même.").color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
+                        lore.add(Component.text(" "));
+                    } else {
+                        lore.add(Component.text(" "));
+                        lore.add(Component.text("➢ Clique pour te Téléporter").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
+                        lore.add(Component.text(" "));
+                    }
+                    skullMeta.lore(lore);
+                    headItem.setItemMeta(skullMeta);
+
+                    inventory.addItem(headItem);
+
+                    ///////////////////////////
+                }
             }
-
-            ItemStack headItem = new ItemStack(Material.PLAYER_HEAD);
-            SkullMeta skullMeta = (SkullMeta) headItem.getItemMeta();
-            assert skullMeta != null;
-            skullMeta.setPlayerProfile(onlinePlayer.getPlayerProfile());
-            skullMeta.displayName(Component.text(onlinePlayer.getName()).color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
-            List<Component> lore = new ArrayList<>();
-            if(opener != null && onlinePlayer.getUniqueId().equals(opener.getUniqueId())) {
-                lore.add(Component.text(" "));
-                lore.add(Component.text("⚠ Tu ne peux pas te").color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
-                lore.add(Component.text("   téléporter à toi même.").color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
-                lore.add(Component.text(" "));
-            } else {
-                lore.add(Component.text(" "));
-                lore.add(Component.text("➢ Clique pour te Téléporter").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
-                lore.add(Component.text(" "));
-            }
-            skullMeta.lore(lore);
-            headItem.setItemMeta(skullMeta);
-            inventory.addItem(headItem);
-
-            addedPlayers.add(onlinePlayer.getUniqueId());
         }
-
-        inventory.setItem(43, super.headRandom);
 
     }
 

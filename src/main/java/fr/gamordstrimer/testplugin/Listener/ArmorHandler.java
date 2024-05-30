@@ -2,7 +2,7 @@ package fr.gamordstrimer.testplugin.Listener;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import fr.gamordstrimer.testplugin.Main;
-import fr.gamordstrimer.testplugin.customitems.CustomItems;
+import fr.gamordstrimer.testplugin.itemsystem.ItemManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,10 +19,10 @@ public class ArmorHandler implements Listener {
 
     public ArmorHandler(Main plugin) {
         curseArmorList = Arrays.asList(
-                CustomItems.getItem("curse_helmet"),
-                CustomItems.getItem("curse_chestplate"),
-                CustomItems.getItem("curse_leggings"),
-                CustomItems.getItem("curse_boots")
+                ItemManager.getCustomItem("curse_helmet"),
+                ItemManager.getCustomItem("curse_chestplate"),
+                ItemManager.getCustomItem("curse_leggings"),
+                ItemManager.getCustomItem("curse_boots")
         );
     }
 
@@ -37,14 +37,14 @@ public class ArmorHandler implements Listener {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 0, false, false));
         }
 
-        if(newItem.isSimilar(CustomItems.getItem("headband"))) {
+        if(newItem.isSimilar(ItemManager.getCustomItem("headband"))) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 0, false, false));
         }
 
         // Check if the old item was part of the curse armor set and the new item is not
         if (oldItem != null && isCurseArmorItem(oldItem) && (newItem == null || !isCurseArmorItem(newItem))) {
             player.removePotionEffect(PotionEffectType.SPEED);
-        } else if (oldItem != null && oldItem.isSimilar(CustomItems.getItem("headband"))) {
+        } else if (oldItem != null && oldItem.isSimilar(ItemManager.getCustomItem("headband"))) {
             player.removePotionEffect(PotionEffectType.BLINDNESS);
         }
     }

@@ -1,7 +1,7 @@
 package fr.gamordstrimer.testplugin.Listener;
 
 import fr.gamordstrimer.testplugin.Main;
-import fr.gamordstrimer.testplugin.customitems.CustomItems;
+import fr.gamordstrimer.testplugin.itemsystem.ItemManager;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,7 +21,7 @@ public class ItemframeHandler implements Listener {
     public void onItemFramePlace(HangingPlaceEvent event) {
         ItemStack item = event.getItemStack();
 
-        if (item.isSimilar(CustomItems.getItem("invisible_item_frame"))) {
+        if (item.isSimilar(ItemManager.getCustomItem("invisible_item_frame"))) {
             ItemFrame itemFrame = (ItemFrame) event.getEntity();
             itemFrame.setVisible(false);
 
