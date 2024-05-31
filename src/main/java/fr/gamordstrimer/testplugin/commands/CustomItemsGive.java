@@ -13,8 +13,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.md_5.bungee.api.ChatColor.translateAlternateColorCodes;
-
 public class CustomItemsGive implements CommandExecutor, TabCompleter {
     private final Main plugin;
 
@@ -34,7 +32,7 @@ public class CustomItemsGive implements CommandExecutor, TabCompleter {
 
         if (player.hasPermission("sendaria.staff.gci") || player.hasPermission("*")) {
             if (args.length == 0) {
-                player.sendMessage(translateAlternateColorCodes('&', prefixserver + "Utilisation : /givecustomitem <itemName> [amount]"));
+                player.sendMessage(prefixserver + "Utilisation : /givecustomitem <itemName> [amount]");
                 return true; // Return true to avoid triggering the default usage message
             }
 
@@ -42,7 +40,7 @@ public class CustomItemsGive implements CommandExecutor, TabCompleter {
                 List<String> itemNames = new ArrayList<>(ItemManager.getCustomItems().keySet());
                 itemNames.sort(String.CASE_INSENSITIVE_ORDER);
                 StringBuilder itemList = new StringBuilder();
-                itemList.append(translateAlternateColorCodes('&', prefixserver + "Liste des Items disponibles :\n"));
+                itemList.append(prefixserver + "Liste des Items disponibles :\n");
                 for (String itemName : itemNames) {
                     itemList.append("§7- §f" + itemName + "\n");
                 }
@@ -51,7 +49,7 @@ public class CustomItemsGive implements CommandExecutor, TabCompleter {
             }
 
             if (args.length < 2) {
-                player.sendMessage(translateAlternateColorCodes('&', prefixserver + "Utilisation : /givecustomitem <itemName> [amount]"));
+                player.sendMessage(prefixserver + "Utilisation : /givecustomitem <itemName> [amount]");
                 return true; // Return true to avoid triggering the default usage message
             }
 
@@ -59,7 +57,7 @@ public class CustomItemsGive implements CommandExecutor, TabCompleter {
             Item customItem = ItemManager.getCustomItems().get(itemName);
 
             if (customItem == null) {
-                player.sendMessage(translateAlternateColorCodes('&', prefixserver + "Item '" + itemName + "' non trouvé."));
+                player.sendMessage(prefixserver + "Item '" + itemName + "' non trouvé.");
                 return true; // Return true to indicate the command was handled
             }
 
@@ -67,17 +65,17 @@ public class CustomItemsGive implements CommandExecutor, TabCompleter {
             try {
                 amount = Integer.parseInt(args[1]);
             } catch (NumberFormatException e) {
-                player.sendMessage(translateAlternateColorCodes('&', prefixserver + "Le Nombre Spécifié est Invalide."));
+                player.sendMessage(prefixserver + "Le Nombre Spécifié est Invalide.");
                 return true; // Return true to indicate the command was handled
             }
 
             ItemStack itemStack = customItem.getItemStack();
             itemStack.setAmount(amount);
             player.getInventory().addItem(itemStack);
-            player.sendMessage(translateAlternateColorCodes('&', prefixserver + "Tu as reçu " + amount + " " + itemName));
+            player.sendMessage(prefixserver + "Tu as reçu " + amount + " " + itemName);
             return true;
         } else {
-            player.sendMessage(translateAlternateColorCodes('&', prefixserver + perms));
+            player.sendMessage(prefixserver + perms);
             return true; // Return true to indicate the command was handled
         }
     }

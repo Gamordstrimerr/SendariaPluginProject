@@ -35,7 +35,6 @@ public class ItemManager {
         registerItem(new HeadBand(), "headband");
         registerItem(new InvisibleItemFrame(), "invisible_item_frame");
         registerItem(new MagicLantern(), "magic_lantern");
-        registerItem(new HealStone(), "heal_stone");
     }
 
     private void registerItem(Item item, String key) {

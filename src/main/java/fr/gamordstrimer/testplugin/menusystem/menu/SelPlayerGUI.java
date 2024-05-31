@@ -1,10 +1,8 @@
 package fr.gamordstrimer.testplugin.menusystem.menu;
 
 import fr.gamordstrimer.testplugin.Main;
-import fr.gamordstrimer.testplugin.menusystem.Menu;
 import fr.gamordstrimer.testplugin.menusystem.PaginatedMenu;
 import fr.gamordstrimer.testplugin.menusystem.PlayerMenuUtility;
-import fr.gamordstrimer.testplugin.staff.StaffMode;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -23,13 +21,39 @@ import java.util.*;
 public class SelPlayerGUI extends PaginatedMenu {
 
     private static final List<SelPlayerGUI> instances = new ArrayList<>();
-    private final Player opener;
     private static final Map<Player, Player> playerTargets = new HashMap<>();
+    private final Player opener;
 
     public SelPlayerGUI(PlayerMenuUtility playerMenuUtility) {
         super(playerMenuUtility);
         this.opener = playerMenuUtility.getOwner();
         instances.add(this);
+    }
+
+    public static void updateMenu() {
+        for (SelPlayerGUI instance : instances) {
+            instance.setMenuItems();
+        }
+    }
+
+    public static Player getTarget(Player player) {
+        return playerTargets.get(player);
+    }
+
+    public static Map<Player, Player> getTargets() {
+        return playerTargets;
+    }
+
+    public static void setTarget(Player opener, Player target) {
+        playerTargets.put(opener, target);
+    }
+
+    public static void removeInstance(SelPlayerGUI instance) {
+        instances.remove(instance);
+    }
+
+    public static void removeTarget(Player opener) {
+        playerTargets.remove(opener);
     }
 
     @Override
@@ -49,7 +73,7 @@ public class SelPlayerGUI extends PaginatedMenu {
         ItemStack item = e.getCurrentItem();
         ArrayList<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
 
-        if(item.isSimilar(super.headRandom)) {
+        if (item.isSimilar(super.headRandom)) {
             List<Player> onlinePlayers = new ArrayList<>(Bukkit.getOnlinePlayers());
             if (onlinePlayers.size() > 1) {
                 onlinePlayers.remove(player);
@@ -59,8 +83,8 @@ public class SelPlayerGUI extends PaginatedMenu {
                 player.teleport(target);
                 player.sendMessage(Component.text(prefixserver)
                         .append(Component.text("Tu as été téléporter à ")
-                        .append(Component.text(target.getName()).color(NamedTextColor.GOLD)
-                        .append(Component.text(".").color(NamedTextColor.WHITE)))));
+                                .append(Component.text(target.getName()).color(NamedTextColor.GOLD)
+                                        .append(Component.text(".").color(NamedTextColor.WHITE)))));
             } else {
                 player.sendMessage(Component.text(prefixserver).append(Component.text("Il n'y a pas assez de joueur en ligne pour utiliser cette fonction !").color(NamedTextColor.RED)));
             }
@@ -90,8 +114,8 @@ public class SelPlayerGUI extends PaginatedMenu {
                     player.teleport(target);
                     player.sendMessage(Component.text(prefixserver)
                             .append(Component.text("Tu as été téléporter à ")
-                            .append(Component.text(target.getName()).color(NamedTextColor.GOLD)
-                            .append(Component.text(".").color(NamedTextColor.WHITE)))));
+                                    .append(Component.text(target.getName()).color(NamedTextColor.GOLD)
+                                            .append(Component.text(".").color(NamedTextColor.WHITE)))));
                 } else {
                     player.sendMessage(Component.text(prefixserver).append(Component.text("Joueur Invalide.").color(NamedTextColor.RED)));
                 }
@@ -111,7 +135,7 @@ public class SelPlayerGUI extends PaginatedMenu {
 
         ArrayList<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
 
-        if(players != null && !players.isEmpty()) {
+        if (players != null && !players.isEmpty()) {
             for (int i = 0; i < super.maxItemsPerPage; i++) {
                 index = super.maxItemsPerPage * page + i;
                 if (index >= players.size()) break;
@@ -124,7 +148,7 @@ public class SelPlayerGUI extends PaginatedMenu {
                     skullMeta.setPlayerProfile(players.get(i).getPlayerProfile());
                     skullMeta.displayName(Component.text(players.get(i).getName()).color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
                     List<Component> lore = new ArrayList<>();
-                    if(opener != null && players.get(i).getUniqueId().equals(opener.getUniqueId())) {
+                    if (opener != null && players.get(i).getUniqueId().equals(opener.getUniqueId())) {
                         lore.add(Component.text(" "));
                         lore.add(Component.text("⚠ Tu ne peux pas te").color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
                         lore.add(Component.text("   téléporter à toi même.").color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
@@ -144,33 +168,6 @@ public class SelPlayerGUI extends PaginatedMenu {
             }
         }
 
-    }
-
-    public static void updateMenu() {
-        for (SelPlayerGUI instance : instances) {
-            instance.setMenuItems();
-        }
-    }
-
-
-    public static Player getTarget(Player player) {
-        return playerTargets.get(player);
-    }
-
-    public static Map<Player, Player> getTargets() {
-        return playerTargets;
-    }
-
-    public static void setTarget(Player opener, Player target) {
-        playerTargets.put(opener, target);
-    }
-
-    public static void removeInstance(SelPlayerGUI instance) {
-        instances.remove(instance);
-    }
-
-    public static void removeTarget(Player opener) {
-        playerTargets.remove(opener);
     }
 
 }
