@@ -9,7 +9,8 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.event.Event;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -58,5 +59,15 @@ public class CurseBoots extends Item {
         this.recipe = cb;
 
         Bukkit.getServer().addRecipe(cb);
+    }
+
+    @Override
+    public void handleItem(Event event) {
+
+    }
+
+    @Override
+    public boolean isItem(ItemStack item) {
+        return true;
     }
 }

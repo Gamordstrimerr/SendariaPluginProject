@@ -2,6 +2,7 @@ package fr.gamordstrimer.testplugin.itemsystem.item;
 
 import fr.gamordstrimer.testplugin.Main;
 import fr.gamordstrimer.testplugin.itemsystem.Item;
+import fr.gamordstrimer.testplugin.itemsystem.ItemManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -9,6 +10,11 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.hanging.HangingPlaceEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -50,5 +56,25 @@ public class InvisibleItemFrame extends Item {
         this.recipe = iif;
 
         Bukkit.getServer().addRecipe(iif);
+    }
+
+    @Override
+    public void handleItem(Event event) {
+        if (event instanceof HangingPlaceEvent e) {
+            ItemStack item = e.getItemStack();
+
+            if (item.isSimilar(ItemManager.getCustomItem("invisible_item_frame"))) {
+                ItemFrame itemFrame = (ItemFrame) e.getEntity();
+                itemFrame.setVisible(false);
+
+                Player player = e.getPlayer();
+                player.sendMessage("§bTu as placé un Cadre Invisible.");
+            }
+        }
+    }
+
+    @Override
+    public boolean isItem(ItemStack item) {
+        return true;
     }
 }

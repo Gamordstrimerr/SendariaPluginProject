@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class PlayerManager {
     private static Main plugin;
-    private Player player;
+    private final Player player;
     private ItemStack[] items = new ItemStack[41];
 
     public PlayerManager(Player player) {

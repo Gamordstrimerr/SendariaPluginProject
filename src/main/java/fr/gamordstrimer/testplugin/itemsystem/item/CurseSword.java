@@ -11,7 +11,9 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.event.Event;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -65,5 +67,15 @@ public class CurseSword extends Item {
 
         // Adding the CurseSword recipe to the server and the CurseSword Item inside the Hashmap
         Bukkit.getServer().addRecipe(cs);
+    }
+
+    @Override
+    public void handleItem(Event event) {
+
+    }
+
+    @Override
+    public boolean isItem(ItemStack item) {
+        return true;
     }
 }

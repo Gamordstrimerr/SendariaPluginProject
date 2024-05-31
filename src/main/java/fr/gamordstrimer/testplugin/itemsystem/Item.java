@@ -1,6 +1,7 @@
 package fr.gamordstrimer.testplugin.itemsystem;
 
 import org.bukkit.Material;
+import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -25,12 +26,17 @@ public abstract class Item {
 
     public abstract void setRecipe();
 
+    public abstract void handleItem(Event event);
+
     public ItemStack getItemStack() {
         return itemStack;
     }
 
     public Recipe getRecipe() {
-        return recipe;
+        return this.recipe;
     }
 
+    public boolean isItem(ItemStack item) {
+        return item != null && item.isSimilar(this.getItemStack());
+    }
 }

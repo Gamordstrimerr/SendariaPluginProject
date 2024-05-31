@@ -1,6 +1,7 @@
 package fr.gamordstrimer.testplugin.commands;
 
 import fr.gamordstrimer.testplugin.Main;
+import fr.gamordstrimer.testplugin.itemsystem.Item;
 import fr.gamordstrimer.testplugin.itemsystem.ItemManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -23,12 +24,11 @@ public class CustomItemsGive implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage("This command can only be used by players.");
             return true; // Return true to indicate the command was handled
         }
 
-        Player player = (Player) sender;
         String perms = plugin.getConfig().getString("messages.haspermissions").replace("&", "§");
         String prefixserver = plugin.getConfig().getString("messages.prefixserver").replace("&", "§");
 
@@ -56,7 +56,7 @@ public class CustomItemsGive implements CommandExecutor, TabCompleter {
             }
 
             String itemName = args[0];
-            ItemStack customItem = ItemManager.getCustomItem(itemName);
+            Item customItem = ItemManager.getCustomItems().get(itemName);
 
             if (customItem == null) {
                 player.sendMessage(translateAlternateColorCodes('&', prefixserver + "Item '" + itemName + "' non trouvé."));
@@ -71,8 +71,9 @@ public class CustomItemsGive implements CommandExecutor, TabCompleter {
                 return true; // Return true to indicate the command was handled
             }
 
-            customItem.setAmount(amount);
-            player.getInventory().addItem(customItem);
+            ItemStack itemStack = customItem.getItemStack();
+            itemStack.setAmount(amount);
+            player.getInventory().addItem(itemStack);
             player.sendMessage(translateAlternateColorCodes('&', prefixserver + "Tu as reçu " + amount + " " + itemName));
             return true;
         } else {

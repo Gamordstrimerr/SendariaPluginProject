@@ -37,12 +37,12 @@ public class ArmorHandler implements Listener {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 0, false, false));
         }
 
-        if(newItem.isSimilar(ItemManager.getCustomItem("headband"))) {
+        if (newItem.isSimilar(ItemManager.getCustomItem("headband"))) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 0, false, false));
         }
 
         // Check if the old item was part of the curse armor set and the new item is not
-        if (oldItem != null && isCurseArmorItem(oldItem) && (newItem == null || !isCurseArmorItem(newItem))) {
+        if (isCurseArmorItem(oldItem) && (!isCurseArmorItem(newItem))) {
             player.removePotionEffect(PotionEffectType.SPEED);
         } else if (oldItem != null && oldItem.isSimilar(ItemManager.getCustomItem("headband"))) {
             player.removePotionEffect(PotionEffectType.BLINDNESS);

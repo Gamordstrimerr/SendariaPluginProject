@@ -10,7 +10,6 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -63,8 +62,6 @@ public class ItemGUI extends Menu {
 
         String itemName = PaginatedMainGUI.getItemName();
         ItemStack itemStack = PaginatedMainGUI.getItemStack();
-
-        Bukkit.getLogger().info(itemName);
 
         Recipe recipe = ItemManager.getRecipe(itemName);
         if (recipe != null) {

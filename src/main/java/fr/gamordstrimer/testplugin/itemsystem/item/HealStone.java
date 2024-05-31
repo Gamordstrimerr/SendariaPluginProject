@@ -6,6 +6,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
+import org.bukkit.event.Event;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,5 +45,15 @@ public class HealStone extends Item {
     @Override
     public void setRecipe() {
         //NO RECIPE FOR THIS ITEM
+    }
+
+    @Override
+    public void handleItem(Event event) {
+
+    }
+
+    @Override
+    public boolean isItem(ItemStack item) {
+        return true;
     }
 }

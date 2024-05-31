@@ -10,8 +10,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -63,5 +64,15 @@ public class HeadBand extends Item {
         this.recipe = hb;
 
         Bukkit.getServer().addRecipe(hb);
+    }
+
+    @Override
+    public void handleItem(Event event) {
+
+    }
+
+    @Override
+    public boolean isItem(ItemStack item) {
+        return true;
     }
 }

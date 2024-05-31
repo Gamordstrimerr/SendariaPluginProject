@@ -1,9 +1,13 @@
 package fr.gamordstrimer.testplugin;
 
-import fr.gamordstrimer.testplugin.Listener.*;
+import fr.gamordstrimer.testplugin.Listener.ArmorHandler;
+import fr.gamordstrimer.testplugin.Listener.ItemListener;
+import fr.gamordstrimer.testplugin.Listener.MenuListener;
+import fr.gamordstrimer.testplugin.Listener.PlayerHandler;
 import fr.gamordstrimer.testplugin.Utils.CooldownManager;
-import fr.gamordstrimer.testplugin.commands.CustomItemsRecipes;
+import fr.gamordstrimer.testplugin.commands.CrawlCommand;
 import fr.gamordstrimer.testplugin.commands.CustomItemsGive;
+import fr.gamordstrimer.testplugin.commands.CustomItemsRecipes;
 import fr.gamordstrimer.testplugin.itemsystem.ItemManager;
 import fr.gamordstrimer.testplugin.menusystem.PlayerMenuUtility;
 import fr.gamordstrimer.testplugin.staff.PlayerManager;
@@ -17,16 +21,35 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.*;
 
 public final class Main extends JavaPlugin {
-    private CooldownManager cooldownManager;
+    private static final HashMap<Player, PlayerMenuUtility> playerMenuUtilityMap = new HashMap<>();
     private static Main instance;
+    private final Map<UUID, PlayerManager> players = new HashMap<>();
+    private CooldownManager cooldownManager;
     private List<UUID> staff;
     private List<UUID> vanish;
     private Map<UUID, Location> freezedplayer;
-    private Map<UUID, PlayerManager> players = new HashMap<>();
-    private static final HashMap<Player, PlayerMenuUtility> playerMenuUtilityMap = new HashMap<>();
 
     // ================================================
     //              onEnable() & onDisable()
+    // ================================================
+
+    public static PlayerMenuUtility getPlayerMenuUtility(Player player) {
+        PlayerMenuUtility playerMenuUtility;
+
+        if (playerMenuUtilityMap.containsKey(player)) {
+            return playerMenuUtilityMap.get(player);
+        } else {
+            playerMenuUtility = new PlayerMenuUtility(player);
+            playerMenuUtilityMap.put(player, playerMenuUtility);
+
+            return playerMenuUtility;
+        }
+    }
+
+    public static Main getInstance() {
+        return instance;
+    }
+
     // ================================================
 
     @Override
@@ -55,6 +78,7 @@ public final class Main extends JavaPlugin {
         Objects.requireNonNull(getCommand("customitemsgive")).setExecutor(new CustomItemsGive(this));
         Objects.requireNonNull(getCommand("customitemsgive")).setTabCompleter(new CustomItemsGive(this));
         Objects.requireNonNull(getCommand("customitemsrecipes")).setExecutor(new CustomItemsRecipes());
+        getCommand("crawl").setExecutor(new CrawlCommand());
         // Staff commands
         Objects.requireNonNull(getCommand("resetcooldown")).setExecutor(new Staff(this, cooldownManager));
         Objects.requireNonNull(getCommand("freeze")).setExecutor(new Staff(this, cooldownManager));
@@ -63,31 +87,16 @@ public final class Main extends JavaPlugin {
 
         //register Event
         getServer().getPluginManager().registerEvents(new ArmorHandler(this), this);
-        getServer().getPluginManager().registerEvents(new ItemframeHandler(this), this);
         getServer().getPluginManager().registerEvents(new StaffHandler(this), this);
-        getServer().getPluginManager().registerEvents(new PlayerHandler(this, cooldownManager), this);
+        getServer().getPluginManager().registerEvents(new PlayerHandler(this), this);
         getServer().getPluginManager().registerEvents(new MenuListener(), this);
+        getServer().getPluginManager().registerEvents(new ItemListener(), this);
     }
 
     @Override
     public void onDisable() {
         cooldownManager.saveCooldowns(); // Save cooldowns before shutting down the server
         instance = null;
-    }
-
-    // ================================================
-
-    public static PlayerMenuUtility getPlayerMenuUtility(Player player) {
-        PlayerMenuUtility playerMenuUtility;
-
-        if (playerMenuUtilityMap.containsKey(player)) {
-            return playerMenuUtilityMap.get(player);
-        } else {
-            playerMenuUtility = new PlayerMenuUtility(player);
-            playerMenuUtilityMap.put(player, playerMenuUtility);
-
-            return playerMenuUtility;
-        }
     }
 
     public List<UUID> getStaff() {
@@ -116,9 +125,5 @@ public final class Main extends JavaPlugin {
 
     public boolean isVanish(Player player) {
         return getVanish().contains(player.getUniqueId());
-    }
-
-    public static Main getInstance() {
-        return instance;
     }
 }

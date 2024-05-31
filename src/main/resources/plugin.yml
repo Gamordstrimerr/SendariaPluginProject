@@ -25,3 +25,6 @@ commands:
   vanish:
     description: Permet de devenir invisible au yeux des joueurs
     usage: /vanish
+  crawl:
+    description: Permet de s'allonger et de ramper sur le sol
+    usage: /crawl
